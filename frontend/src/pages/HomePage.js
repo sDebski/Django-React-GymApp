@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import useAxios from "../utils/useAxios";
 
 const HomePage = () => {
   let { authTokens, logoutUser } = useContext(AuthContext);
@@ -8,21 +9,13 @@ const HomePage = () => {
     getExercises();
   }, []);
 
-  let getExercises = async () => {
-    let response = await fetch("http://127.0.0.1:8000/api/exercises/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(authTokens.access),
-      },
-    });
+  let api = useAxios();
 
-    let data = await response.json();
+  let getExercises = async () => {
+    let response = await api.get("/api/exercises/");
 
     if (response.status === 200) {
-      setExercises(data);
-    } else if (response.statusText === "Unauthorized") {
-      logoutUser();
+      setExercises(response.data);
     }
   };
 
