@@ -7,15 +7,16 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=200, null=True)
     last_name = models.CharField(max_length=200, null=True)
     email = models.EmailField(null=True, unique=True)
-    bio = models.TextField(null=True)
+    bio = models.TextField(null=True, blank=True)
+    username = models.CharField(max_length=20, null=True, blank=True)
 
-    avatar = models.ImageField(null=True, default="")
+    # avatar = models.ImageField(null=True, default="", blank=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self) -> str:
-        return self.first_name
+        return self.email
 
 
 class Exercise(models.Model):

@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: formData.get("email"),
+        email: formData.get("email"),
         password: formData.get("password"),
       }),
     });
