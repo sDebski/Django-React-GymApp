@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import ExerciseSerializer
 from .models import Exercise
+from rest_framework import generics, status
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -15,7 +16,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        token["username"] = user.username
+        token["email"] = user.email
 
         return token
 
@@ -26,10 +27,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 @api_view(["GET"])
 def getRoutes(request):
-    routes = [
-        "/api/token/",
-        "/api/token/refresh",
-    ]
+    routes = ["/api/token/", "/api/token/refresh", "/api/register"]
     return Response(routes)
 
 
@@ -40,3 +38,17 @@ def getExercises(request):
     exercises = user.exercise_set.all()
     serializer = ExerciseSerializer(exercises, many=True)
     return Response(serializer.data)
+
+
+@api_view(["POST"])
+def registerUser(request):
+    print(request.method)
+    post_data = request.data
+    data = {
+        "first_name": post_data.get("firstname"),
+        "last_name": post_data.get("lastname"),
+        "email": post_data.get("email"),
+        "password": post_data.get("password"),
+    }
+
+    return Response({"message": "I got here!"}, status=status.HTTP_200_OK)

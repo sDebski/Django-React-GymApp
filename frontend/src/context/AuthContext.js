@@ -23,15 +23,15 @@ export const AuthProvider = ({ children }) => {
 
   let loginUser = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const formData = new FormData(e.currentTarget);
     let response = await fetch("http://127.0.0.1:8000/api/token/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: e.target.username.value,
-        password: e.target.password.value,
+        username: formData.get("email"),
+        password: formData.get("password"),
       }),
     });
     let data = await response.json();
@@ -40,6 +40,30 @@ export const AuthProvider = ({ children }) => {
       setUser(jwt_decode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/");
+    } else {
+      alert("Something went wrong!");
+    }
+  };
+
+  let registerUser = async (data) => {
+    console.log("registration page data: ", data);
+    console.log("registration page first name data: ", data["firstName"]);
+
+    let response = await fetch("http://127.0.0.1:8000/api/register/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstname: data["firstName"],
+        lastname: data["lastName"],
+        password: data["password"],
+        email: data["email"],
+      }),
+    });
+
+    if (response.status === 200) {
+      navigate("/login");
     } else {
       alert("Something went wrong!");
     }
@@ -59,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     authTokens: authTokens,
     setAuthTokens: setAuthTokens,
     setUser: setUser,
+    registerUser: registerUser,
   };
 
   useEffect(() => {
