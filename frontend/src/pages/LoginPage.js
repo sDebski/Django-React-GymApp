@@ -19,13 +19,17 @@ const defaultTheme = createTheme();
 export default function LoginPage() {
   let { loginUser } = useContext(AuthContext);
 
+  let handleForgottenPassword = () => {
+    window.location.replace("api/accounts/reset_password/");
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
 
-    if ((email == "") | (password == "")) {
+    if ((email === "") | (password === "")) {
       alert("Email or password missing!");
       return;
     }
@@ -86,9 +90,9 @@ export default function LoginPage() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Button onClick={handleForgottenPassword} variant="body2">
                   Forgot password?
-                </Link>
+                </Button>
               </Grid>
             </Grid>
           </Box>

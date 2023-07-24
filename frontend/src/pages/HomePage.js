@@ -12,7 +12,7 @@ const HomePage = () => {
   let api = useAxios();
 
   let getExercises = async () => {
-    let response = await api.get("/api/exercises/");
+    let response = await api.get("/exercises/");
 
     if (response.status === 200) {
       setExercises(response.data);
