@@ -34,7 +34,5 @@ def send_email(request, user):
     email = EmailMessage(
         subject=data["email_subject"], body=data["email_body"], to=[data["to_email"]]
     )
-    if email.send():
-        return True
-    else:
-        return False
+
+    email.send(fail_silently=False)

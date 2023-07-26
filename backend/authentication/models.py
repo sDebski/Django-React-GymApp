@@ -4,10 +4,11 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.utils import timezone
 
 
-class MyUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, date_of_birth, password=None):
+        print("Tworze zwyklego usera")
         if not email:
-            raise ValueError("Users must have an email address")
+            raise ValueError("User must have an email address")
 
         user = self.model(
             email=self.normalize_email(email),
@@ -20,28 +21,17 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_coach(self, email, first_name, last_name, date_of_birth, password=None):
-        user = self.model(
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
-            date_of_birth=date_of_birth,
-        )
-        user.is_coach = True
+    def create_superuser(self, email, first_name, password=None):
+        print("Tworze super usera")
+        if password is None:
+            raise ValueError("Superuser must have a password.")
 
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(
-        self, email, first_name, last_name, date_of_birth, password=None
-    ):
         user = self.create_user(
             email,
             first_name=first_name,
-            last_name=last_name,
+            last_name=None,
+            date_of_birth=None,
             password=password,
-            date_of_birth=date_of_birth,
         )
         user.is_admin = True
         user.is_active = True
@@ -50,22 +40,21 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(max_length=255, unique=True, db_index=True)
     first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    date_of_birth = models.DateField()
+    last_name = models.CharField(max_length=255, null=True)
+    date_of_birth = models.DateField(null=True)
     is_active = models.BooleanField(default=False)
     is_coach = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     expiry_date = models.DateTimeField(null=True, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-    objects = MyUserManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "date_of_birth"]
+    REQUIRED_FIELDS = ["first_name"]
 
     def __str__(self):
         return self.email
@@ -82,8 +71,6 @@ class User(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
         return self.is_admin
 
 

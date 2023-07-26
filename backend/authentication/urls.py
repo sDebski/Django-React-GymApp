@@ -4,11 +4,11 @@ from rest_framework_simplejwt import views as jwt_views
 
 
 urlpatterns = [
-    path("", getRoutes),
-    path("register/", RegistrationView, name="register"),
-    path("login/", LoginView, name="login"),
-    path("logout/", LogoutView, name="logout"),
-    path("change-password/", ChangePasswordView, name="change_passwd"),
+    path("routes/", getRoutes.as_view()),
+    path("register/", RegistrationView.as_view(), name="register"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("change-password/", ChangePasswordView.as_view(), name="change_passwd"),
     path(
         "token-refresh/",
         jwt_views.TokenRefreshView.as_view(),

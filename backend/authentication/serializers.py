@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Exercise, User
+from rest_framework.validators import UniqueValidator
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
@@ -10,6 +11,9 @@ class ExerciseSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
+    email = serializers.EmailField(
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
 
     class Meta:
         model = User
@@ -21,7 +25,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "password",
             "password2",
         ]
-        extra_kwargs = {"password": {"write_only": True}}
 
     def save(self):
         user = User(
