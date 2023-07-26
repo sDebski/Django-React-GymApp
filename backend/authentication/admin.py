@@ -54,6 +54,7 @@ class UserChangeForm(forms.ModelForm):
             "date_of_birth",
             "password",
             "is_active",
+            "is_coach",
             "is_admin",
         )
 
@@ -65,13 +66,21 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ("email", "date_of_birth", "is_admin", "first_name", "last_name")
+    list_display = (
+        "email",
+        "date_of_birth",
+        "is_admin",
+        "is_active",
+        "is_coach",
+        "first_name",
+        "last_name",
+    )
     list_filter = ("is_admin",)
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal info", {"fields": ("date_of_birth", "first_name", "last_name")}),
         ("Permissions", {"fields": ("is_admin",)}),
-        ("Important Date", {"fields": ()}),
+        ("Important Date", {"fields": ("is_active", "is_coach")}),
     )
     add_fieldsets = (
         (

@@ -3,12 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from django.template.loader import render_to_string
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.core.mail import EmailMessage
-from .tokens import account_activation_token
+from .models import User
+from .utils import send_email
+from django.conf import settings
+import jwt
+from .serializers import EmailVerificationSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 from .utils import get_tokens_for_user
@@ -17,22 +18,7 @@ from .serializers import (
     RegistrationSerializer,
     PasswordChangeSerializer,
 )
-from rest_framework import status
-
-
-def activateEmail(request, user, to_email):
-    mail_subject = "Activate your user account."
-    message = render_to_string(
-        "template_activate_account.html",
-        {
-            "user": user.username,
-            "domain": get_current_site(request).domain,
-            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-            "token": account_activation_token.make_token(user),
-            "protocol": "https" if request.is_secure() else "http",
-        },
-    )
-    email = EmailMessage(mail_subject, message, to=[to_email])
+from rest_framework import status, generics, views
 
 
 @api_view(["GET"])
@@ -50,38 +36,63 @@ def getExercises(request):
     return Response(serializer.data)
 
 
-# @api_view(["POST"])
-# def registerUser(request):
-#     print(request.method)
-#     post_data = request.data
-#     data = {
-#         "first_name": post_data.get("firstname"),
-#         "last_name": post_data.get("lastname"),
-#         "email": post_data.get("email"),
-#         "password": post_data.get("password"),
-#     }
-
-#     user = User.objects.get(email=data["email"])
-#     if not user:
-#         pass
-#         # user = User.objects.create(
-#         #     'first_name': data['first_name'],
-#         #     'last_name': data['last_name'],
-#         #     'email': data['email'],
-
-#         # )
-
-#     return Response({"message": "I got here!"}, status=status.HTTP_200_OK)
-
-
 @api_view(["POST"])
 def RegistrationView(request):
     print(request.data)
     serializer = RegistrationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user_data = serializer.data
+        user = User.objects.get(email=user_data["email"])
+        print(user)
+
+        email_response = send_email(request, user)
+        if email_response:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                {"msg": "Error while sending authentication email"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyEmail(views.APIView):
+    serializer_class = EmailVerificationSerializer
+
+    token_param_config = openapi.Parameter(
+        "token",
+        in_=openapi.IN_QUERY,
+        description="Desription",
+        type=openapi.TYPE_STRING,
+    )
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request):
+        token = request.GET.get("token")
+        print("Token: ", token)
+        try:
+            print("Przed decode")
+            print("Secret: ", settings.SECRET_KEY)
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, options={"verify_signature": False}
+            )
+            print("Payload: ", payload)
+            user = User.objects.get(id=payload["user_id"])
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+            return Response(
+                {"msg": "Email successfully activated."}, status=status.HTTP_200_OK
+            )
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {"error": "Activation link expired"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except jwt.exceptions.DecodeError:
+            return Response(
+                {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 @api_view(["POST"])

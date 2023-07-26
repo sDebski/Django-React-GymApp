@@ -20,7 +20,7 @@ export default function LoginPage() {
   let { loginUser } = useContext(AuthContext);
 
   let handleForgottenPassword = () => {
-    window.location.replace("api/accounts/reset_password/");
+    window.location.replace("accounts/reset_password/");
   };
 
   const handleSubmit = (event) => {

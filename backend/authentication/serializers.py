@@ -51,3 +51,11 @@ class PasswordChangeSerializer(serializers.Serializer):
         if not self.context["request"].user.check_password(value):
             raise serializers.ValidationError({"current_password": "Does not match"})
         return value
+
+
+class EmailVerificationSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=512)
+
+    class Meta:
+        model = User
+        fields = ["token"]

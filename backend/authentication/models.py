@@ -44,6 +44,7 @@ class MyUserManager(BaseUserManager):
             date_of_birth=date_of_birth,
         )
         user.is_admin = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
@@ -56,7 +57,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     date_of_birth = models.DateField()
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_coach = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     expiry_date = models.DateTimeField(null=True, blank=True)
