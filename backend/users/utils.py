@@ -18,7 +18,8 @@ def send_email(request, user):
     token = RefreshToken.for_user(user).access_token
     print(token)
     current_site = get_current_site(request).domain
-    relativeLink = reverse("email_verify")
+    print(current_site)
+    relativeLink = reverse("users:email_verify")
     absurl = "http://" + current_site + relativeLink + "?token=" + str(token)
 
     email_body = (

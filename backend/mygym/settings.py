@@ -22,11 +22,12 @@ INSTALLED_APPS = [
     "frontend",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-    "authentication",
+    "users",
     "drf_yasg",
 ]
 
 REST_FRAMEWORK = {
+    "NON_FIELD_ERRORS_KEY": "error",
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -116,8 +117,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-AUTH_USER_MODEL = "authentication.User"
-AUTH_PROFILE_MODULE = "authentication.User"
+AUTH_USER_MODEL = "users.User"
+AUTH_PROFILE_MODULE = "users.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
@@ -125,5 +126,8 @@ EMAIL_PORT = "587"
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # LOGIN_URL = "login"

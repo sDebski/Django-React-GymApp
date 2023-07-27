@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 from rest_framework_simplejwt import views as jwt_views
 
+app_name = "users"
 
 urlpatterns = [
     path("routes/", getRoutes.as_view()),
