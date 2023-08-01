@@ -13,12 +13,18 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AuthContext from "../context/AuthContext";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function RegistrationPage() {
+  const onChange = (date) => {
+    console.log(date.toString());
+  };
+
   let { registerUser } = useContext(AuthContext);
   const validatePassword = (pass) => {
     let regExpr = /^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
@@ -28,17 +34,20 @@ export default function RegistrationPage() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const registerData = {
-      firstName: data.get("firstName"),
-      lastName: data.get("lastName"),
+      first_name: data.get("first_name"),
+      last_name: data.get("last_name"),
       password: data.get("password"),
+      password2: data.get("password2"),
       email: data.get("email"),
+      date_of_birth: data.get("date_of_birth"),
     };
 
     if (
-      (registerData.email == "") |
-      (registerData.password == "") |
-      (registerData.firstName == "") |
-      (registerData.lastName == "")
+      (registerData.email === "") |
+      (registerData.password === "") |
+      (registerData.password2 === "") |
+      (registerData.first_name === "") |
+      (registerData.last_name === "")
     ) {
       alert("Fill up all fields!");
       return;
@@ -46,6 +55,11 @@ export default function RegistrationPage() {
 
     if (!validatePassword(registerData.password)) {
       alert("Password has to be [6-16] characters long and contain a number!");
+      return;
+    }
+
+    if (registerData.password !== registerData.password2) {
+      alert("Passwords do not match!");
       return;
     }
 
@@ -80,10 +94,10 @@ export default function RegistrationPage() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="first_name"
                   required
                   fullWidth
-                  id="firstName"
+                  id="first_name"
                   label="First Name"
                   autoFocus
                 />
@@ -92,9 +106,9 @@ export default function RegistrationPage() {
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
+                  id="last_name"
                   label="Last Name"
-                  name="lastName"
+                  name="last_name"
                   autoComplete="family-name"
                 />
               </Grid>
@@ -117,6 +131,27 @@ export default function RegistrationPage() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password2"
+                  label="Confirm Password"
+                  type="password"
+                  id="password2"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <span>Date of Birth</span>
+                <TextField
+                  required
+                  fullWidth
+                  name="date_of_birth"
+                  type="date"
+                  id="date_of_birth"
                 />
               </Grid>
             </Grid>

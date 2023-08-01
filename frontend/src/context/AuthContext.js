@@ -7,6 +7,8 @@ const AuthContext = createContext();
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
+  let baseURL = "http://127.0.0.1:8000/users/";
+
   let [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens"))
@@ -14,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   );
   let [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
-      ? jwt_decode(localStorage.getItem("authTokens"))
+      ? localStorage.getItem("authTokens").first_name
       : null
   );
 
@@ -24,20 +26,21 @@ export const AuthProvider = ({ children }) => {
   let loginUser = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    let response = await fetch("http://127.0.0.1:8000/api/token/", {
+    let response = await fetch(baseURL + "login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: formData.get("email"),
+        email: formData.get("email"),
         password: formData.get("password"),
       }),
     });
     let data = await response.json();
     if (response.status === 200) {
       setAuthTokens(data);
-      setUser(jwt_decode(data.access));
+      console.log(data);
+      setUser(data.first_name);
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/");
     } else {
@@ -47,22 +50,24 @@ export const AuthProvider = ({ children }) => {
 
   let registerUser = async (data) => {
     console.log("registration page data: ", data);
-    console.log("registration page first name data: ", data["firstName"]);
+    console.log("registration page first name data: ", data["first_name"]);
 
-    let response = await fetch("http://127.0.0.1:8000/api/register/", {
+    let response = await fetch(baseURL + "register/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        firstname: data["firstName"],
-        lastname: data["lastName"],
+        first_name: data["first_name"],
+        last_name: data["last_name"],
         password: data["password"],
+        password2: data["password2"],
+        date_of_birth: data["date_of_birth"],
         email: data["email"],
       }),
     });
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       navigate("/login");
     } else {
       alert("Something went wrong!");
@@ -88,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (authTokens) {
-      setUser(jwt_decode(authTokens.access));
+      setUser(authTokens.first_name);
     }
 
     setLoading(false);

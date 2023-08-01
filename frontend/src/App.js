@@ -18,8 +18,8 @@ function App() {
             <Route exact path="/" element={<PrivateRoute />}>
               <Route exact path="/" element={<HomePage />} />
             </Route>
-            <Route Component={LoginPage} path="/login" />
-            <Route Component={RegisterPage} path="/register" />
+            <Route Component={LoginPage} path="login/" />
+            <Route Component={RegisterPage} path="register/" />
           </Routes>
         </AuthProvider>
       </Router>
