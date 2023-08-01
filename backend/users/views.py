@@ -84,6 +84,10 @@ class VerifyEmail(APIView):
             error_msg = "Invalid token"
             status = HTTP_400_BAD_REQUEST
             return Response({"error": error_msg}, status=status)
+        except:
+            error_msg = "Invalid data"
+            status = HTTP_400_BAD_REQUEST
+            return Response({"error": error_msg}, status=status)
 
 
 class LoginView(generics.GenericAPIView):
