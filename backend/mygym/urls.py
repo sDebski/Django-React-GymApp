@@ -24,6 +24,7 @@ urlpatterns = [
     path("", include("frontend.urls")),
     path("admin/", admin.site.urls),
     path("users/", include("users.urls", namespace="users")),
+    path("exercises/", include("exercises.urls", namespace="exercises")),
     path(
         "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),

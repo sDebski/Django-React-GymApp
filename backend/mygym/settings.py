@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "users",
     "drf_yasg",
+    "exercises",
 ]
 
 SWAGGER_SETTINGS = {
