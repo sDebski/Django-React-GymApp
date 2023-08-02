@@ -47,6 +47,7 @@ class UserAdmin(BaseUserAdmin):
                     "is_staff",
                     "is_active",
                     "is_admin",
+                    "is_coach",
                 )
             },
         ),
@@ -66,6 +67,7 @@ class UserAdmin(BaseUserAdmin):
                     "last_name",
                     "is_staff",
                     "is_active",
+                    "is_coach",
                 ),
             },
         ),

@@ -59,6 +59,10 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
+    @property
+    def first_name_last_name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Exercise(models.Model):
     DONE = "done"

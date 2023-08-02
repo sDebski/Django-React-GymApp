@@ -46,7 +46,7 @@ class Exercise(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Exercise: {self.title} | Host: {get_owner_name(self.owner)}"
+        return f"ID: {self.id} | Exercise: {self.title} | Host: {get_owner_name(self.owner)}"
 
 
 class Comment(models.Model):
