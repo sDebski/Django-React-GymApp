@@ -6,7 +6,7 @@ from .models import *
 class CategoryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fieds = "__all__"
+        fields = "__all__"
 
 
 class ExerciseReadSerializer(serializers.ModelSerializer):

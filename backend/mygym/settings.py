@@ -18,12 +18,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # third party api services
+    "algoliasearch_django",
+    # third party packages
     "rest_framework",
-    "frontend",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-    "users",
     "drf_yasg",
+    # internal apps
+    "frontend",
+    "users",
     "exercises",
 ]
 
@@ -47,8 +51,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 100
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,
 }
 
 MIDDLEWARE = [
@@ -113,6 +117,12 @@ AUTH_PASSWORD_VALIDATORS = [
     #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     # },
 ]
+
+ALGOLIA = {
+    "APPLICATION_ID": config("ALGOLIA_APPLICATION_ID"),
+    "API_KEY": config("ALGOLIA_ADMIN_API_KEY"),
+    "INDEX_PREFIX": "skwde",
+}
 
 
 LANGUAGE_CODE = "en-us"

@@ -59,9 +59,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
 
-# Create your views here.
 class LikeExerciseAPIView(views.APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk):
         user = request.user

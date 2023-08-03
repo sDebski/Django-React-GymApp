@@ -50,7 +50,7 @@ class Exercise(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(
+    exercise = models.ForeignKey(
         Exercise, related_name="comments", on_delete=models.CASCADE
     )
     owner = models.ForeignKey(
