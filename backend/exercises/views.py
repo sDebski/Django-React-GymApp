@@ -23,7 +23,6 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ("create",):
-            print("wchodze create")
             self.permission_classes = (IsCoach,)
         elif self.action in ("update", "partial_update", "destroy"):
             self.permission_classes = (IsCoach, IsOwnerOrReadOnly)

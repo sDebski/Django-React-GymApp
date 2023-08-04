@@ -12,22 +12,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from rest_framework import permissions, serializers, generics
+from rest_framework import permissions, generics
 
-from .utils import get_tokens_for_user
 from .serializers import *
-
-
-class getRoutes(APIView):
-    def get(self, request):
-        routes = [
-            "/accounts/register/",
-            "/accounts/login/",
-            "/accounts/logout",
-            "/accounts/change-passwd/",
-            "/accounts/token-refresh",
-        ]
-        return Response(routes)
 
 
 class RegistrationView(generics.GenericAPIView):

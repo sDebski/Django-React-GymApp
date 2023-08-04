@@ -20,6 +20,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["-name"]
+
 
 class Exercise(models.Model):
     title = models.CharField(_("Exercise name"), max_length=200)
@@ -41,6 +44,21 @@ class Exercise(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_categories(self):
+        categories = list(
+            cat.name for cat in self.categories.get_queryset().only("name")
+        )
+        return categories
+
+    def get_likes(self):
+        likes = list(
+            (like.first_name, like.last_name) for like in self.likes.get_queryset()
+        )
+        return likes
+
+    def get_owner_first_name_last_name(self):
+        return self.owner.first_name_last_name
 
     class Meta:
         ordering = ["-created_at"]
