@@ -3,6 +3,7 @@ from django.conf import settings
 from rest_framework import generics, views, permissions, status, viewsets
 from rest_framework.response import Response
 from . import client
+from decouple import config
 
 
 class SearchHelloView(views.APIView):
@@ -37,3 +38,14 @@ class SearchUsersListView(views.APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         results = client.perform_search(query=query, index_name=self.index_name)
         return Response(results, status=status.HTTP_200_OK)
+
+
+class SerachPublicAPIKeysView(views.APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        data = {
+            "APPLICATION_ID": settings.APPLICATION_ID,
+            "PUBLIC_API_KEY": settings.PUBLIC_API_KEY,
+        }
+        return Response(data, status=status.HTTP_200_OK)
