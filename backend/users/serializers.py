@@ -1,6 +1,14 @@
 from rest_framework import serializers
 from .models import User, Profile
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import (
+    smart_str,
+    force_str,
+    smart_text,
+    DjangoUnicodeDecodeError,
+)
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -84,3 +92,24 @@ class ProfileAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ("avatar",)
+
+
+class ResetPasswordRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        fields = ["email"]
+
+    def validate(self, attrs):
+        try:
+            email = attrs.get("email", "")
+            if User.objects.filter(email=email).exists():
+                user = User.objects.get(email=email)
+                uidb64 = urlsafe_base64_encode(user.id)
+                token = PasswordResetTokenGenerator().make_token(user)
+
+            return attrs
+        except:
+            pass
+
+        return super().validate(attrs)

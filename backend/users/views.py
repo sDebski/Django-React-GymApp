@@ -15,11 +15,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import permissions, generics
 
 from .serializers import *
+from utils.renderers import UserRenderer
 
 
 class RegistrationView(generics.GenericAPIView):
     serializer_class = RegistrationSerializer
     permission_classes = (AllowAny,)
+    renderer_classes = (UserRenderer,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -153,3 +155,11 @@ class ChangePasswordView(generics.GenericAPIView):
             error_msg = "Error while validating data"
             status = HTTP_400_BAD_REQUEST
             return Response({"error": error_msg}, status=status)
+
+
+class RequestPasswordResetEmailView(generics.GenericAPIView):
+    serializer_class = ResetPasswordRequestSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
