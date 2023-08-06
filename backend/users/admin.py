@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # Register your models here.
 from .forms import MyUserChangeForm, MyUserCreationForm
-from .models import User, Exercise, Profile
+from .models import User, Profile
 
 
 class ProfileInline(admin.StackedInline):
@@ -42,14 +42,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         (
             "Permissions",
-            {
-                "fields": (
-                    "is_staff",
-                    "is_active",
-                    "is_admin",
-                    "is_coach",
-                )
-            },
+            {"fields": ("is_staff", "is_active", "is_admin", "is_coach")},
         ),
         ("Dates", {"fields": ("last_login",)}),
     )

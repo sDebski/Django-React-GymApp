@@ -5,7 +5,7 @@ def get_client():
     return algolia_engine.client
 
 
-def get_index(index_name="skwde_Exercise"):
+def get_index(index_name):
     client = get_client()
     index = client.init_index(index_name)
     return index
@@ -13,6 +13,7 @@ def get_index(index_name="skwde_Exercise"):
 
 def perform_search(query, **kwargs):
     index_name = kwargs.pop("index_name")
+    print("index_name", index_name)
     index = get_index(index_name=index_name)
     params = {}
     if "tags" in kwargs:

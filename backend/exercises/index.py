@@ -1,5 +1,5 @@
 from algoliasearch_django import AlgoliaIndex
-from ..exercises.models import Exercise
+from .models import Exercise
 from algoliasearch_django.decorators import register
 
 
@@ -18,4 +18,4 @@ class ExerciseIndex(AlgoliaIndex):
         "attributesForFaceting": [],
     }
 
-    tags = "get_tags_list"
+    # tags = "get_tags_list"

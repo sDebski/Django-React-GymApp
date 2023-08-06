@@ -13,7 +13,7 @@ class SearchHelloView(views.APIView):
 
 
 # Create your views here.
-class SearchExerciseListView(views.APIView):
+class SearchExercisesListView(views.APIView):
     index_prefix = settings.ALGOLIA.get("INDEX_PREFIX")
     permission_classes = (permissions.AllowAny,)
     index_name = f"{index_prefix}_Exercise"
@@ -33,11 +33,7 @@ class SearchUsersListView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         query = request.GET.get("q")
-        return Response(
-            {"msg": f"query: {query}", "index_name": self.index_name},
-            status=status.HTTP_200_OK,
-        )
-        # if not query:
-        #     return Response(status=status.HTTP_400_BAD_REQUEST)
-        # results = client.perform_search(query=query)
-        # return Response(results, status=status.HTTP_200_OK)
+        if not query:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        results = client.perform_search(query=query, index_name=self.index_name)
+        return Response(results, status=status.HTTP_200_OK)
