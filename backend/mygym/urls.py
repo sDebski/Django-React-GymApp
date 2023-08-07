@@ -26,6 +26,7 @@ urlpatterns = [
     path("users/", include("users.urls", namespace="users")),
     path("exercises/", include("exercises.urls", namespace="exercises")),
     path("search/", include("search.urls", namespace="search")),
+    path("expenses/", include("expenses.urls", namespace="expenses")),
     path(
         "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),

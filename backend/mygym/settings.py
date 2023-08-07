@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "frontend",
     "users",
     "exercises",
+    "expenses",
 ]
 
 SWAGGER_SETTINGS = {
