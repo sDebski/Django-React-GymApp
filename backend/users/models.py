@@ -51,7 +51,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ["first_name"]
 
     def __str__(self):
-        return self.email
+        return f"{self.id} {self.email}"
 
     def has_perm(self, perm, obj=None):
         return self.is_admin
@@ -64,39 +64,42 @@ class User(AbstractBaseUser):
         return f"{self.first_name} {self.last_name}"
 
 
-class Exercise(models.Model):
-    DONE = "done"
-    CANCELED = "canceled"
-    AVAILABLE = "active"
+# class Exercise(models.Model):
+#     DONE = "done"
+#     CANCELED = "canceled"
+#     AVAILABLE = "active"
 
-    STATUS = (
-        (DONE, ("Done - Exercise already took place.")),
-        (CANCELED, ("Canceled - Exercise canceled")),
-        (AVAILABLE, ("AVAILABLE - Exercises will take place ")),
-    )
-    name = models.CharField(max_length=32, default="Exercise")
-    host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    body = models.TextField(max_length=256)
-    created = models.DateTimeField(auto_now_add=True)
-    data = models.DateTimeField(auto_now_add=True)
+#     STATUS = (
+#         (DONE, ("Done - Exercise already took place.")),
+#         (CANCELED, ("Canceled - Exercise canceled")),
+#         (AVAILABLE, ("AVAILABLE - Exercises will take place ")),
+#     )
+#     name = models.CharField(max_length=32, default="Exercise")
+#     host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+#     body = models.TextField(max_length=256)
+#     created = models.DateTimeField(auto_now_add=True)
+#     data = models.DateTimeField(auto_now_add=True)
 
-    status = models.CharField(
-        max_length=32,
-        choices=STATUS,
-        default=AVAILABLE,
-    )
+#     status = models.CharField(
+#         max_length=32,
+#         choices=STATUS,
+#         default=AVAILABLE,
+#     )
 
-    class Meta:
-        ordering = ["-created"]
+#     class Meta:
+#         ordering = ["-created"]
 
-    def __str__(self) -> str:
-        return self.name
+#     def __str__(self) -> str:
+#         return self.name
 
 
 def get_image_filename(instance, filename):
-    name = instance.product.name
+    # import pdb
+
+    # pdb.set_trace()
+    name = instance.user.email
     slug = slugify(name)
-    return f"products/{slug}-{filename}"
+    return f"profiles/{slug}-{filename}"
 
 
 class Profile(models.Model):

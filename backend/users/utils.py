@@ -27,7 +27,7 @@ def send_activation_email(request, user):
     print(token)
     current_site = get_current_site(request).domain
     print(current_site)
-    relativeLink = reverse("users:email_verify")
+    relativeLink = reverse("users:email-verify")
     absurl = "http://" + current_site + relativeLink + "?token=" + str(token)
 
     email_body = (
@@ -56,7 +56,7 @@ def send_email_reset(request, user):
     uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
     token = PasswordResetTokenGenerator().make_token(user)
     relativeLink = reverse(
-        "users:password_reset_confirm",
+        "users:password-reset-confirm",
         kwargs={
             "uidb64": uidb64,
             "token": token,

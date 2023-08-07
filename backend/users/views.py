@@ -36,20 +36,12 @@ class RegistrationView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-
-        # try:
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        # try:
-        print("wchodze do wysylania")
         send_activation_email(request, user)
         msg = "User succesfuly created. Authentication email send."
         status = HTTP_201_CREATED
         return Response({"msg": msg}, status=status)
-        # except:
-        #     error_msg = "Error while registering a user"
-        #     status = HTTP_400_BAD_REQUEST
-        #     return Response({"error": error_msg}, status=status)
 
 
 class VerifyEmail(APIView):
@@ -95,19 +87,14 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-        try:
-            serializer = self.serializer_class(data=self.request.data)
-            serializer.is_valid(raise_exception=True)
-            user = serializer.validated_data
-            serializer = UserSerializer(user)
-            token = RefreshToken.for_user(user)
-            data = serializer.data
-            print(data)
-            data["tokens"] = {"refresh": str(token), "access": str(token.access_token)}
-            return Response(data, status=HTTP_200_OK)
-        except:
-            error_msg = "Invalid credentials"
-            return Response({"error": error_msg}, status=HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        serializer = UserSerializer(user)
+        token = RefreshToken.for_user(user)
+        data = serializer.data
+        data["tokens"] = {"refresh": str(token), "access": str(token.access_token)}
+        return Response(data, status=HTTP_200_OK)
 
 
 class LogoutView(APIView):
@@ -122,7 +109,7 @@ class LogoutView(APIView):
             return Response(status=HTTP_400_BAD_REQUEST)
 
 
-class UserView(generics.GenericAPIView):
+class UserView(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
 
@@ -130,7 +117,7 @@ class UserView(generics.GenericAPIView):
         return self.request.user
 
 
-class UserProfileView(generics.GenericAPIView):
+class UserProfileView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
@@ -139,7 +126,7 @@ class UserProfileView(generics.GenericAPIView):
         return self.request.user.profile
 
 
-class UserAvatarAPIView(generics.GenericAPIView):
+class UserAvatarView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileAvatarSerializer
     permission_classes = (IsAuthenticated,)
@@ -187,7 +174,7 @@ class RequestPasswordResetEmailView(generics.GenericAPIView):
         )
 
 
-class PasswordTokenCheckAPIView(generics.GenericAPIView):
+class PasswordTokenCheckView(generics.GenericAPIView):
     def get(self, request, uidb64, token):
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
@@ -214,7 +201,7 @@ class PasswordTokenCheckAPIView(generics.GenericAPIView):
             )
 
 
-class SetNewPasswordAPIView(generics.GenericAPIView):
+class SetNewPasswordView(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
     def patch(self, request):
