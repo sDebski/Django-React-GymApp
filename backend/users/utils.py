@@ -2,6 +2,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import (
+    smart_str,
+    force_str,
+    smart_bytes,
+    DjangoUnicodeDecodeError,
+)
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 def get_tokens_for_user(user):
@@ -14,7 +22,7 @@ def get_tokens_for_user(user):
     }
 
 
-def send_email(request, user):
+def send_activation_email(request, user):
     token = RefreshToken.for_user(user).access_token
     print(token)
     current_site = get_current_site(request).domain
@@ -32,6 +40,41 @@ def send_email(request, user):
         "to_email": user.email,
     }
 
+    email = EmailMessage(
+        subject=data["email_subject"],
+        body=data["email_body"],
+        to=[
+            data["to_email"],
+        ],
+    )
+
+    email.send(fail_silently=False)
+
+
+def send_email_reset(request, user):
+    current_site = get_current_site(request).domain
+    uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+    token = PasswordResetTokenGenerator().make_token(user)
+    relativeLink = reverse(
+        "users:password_reset_confirm",
+        kwargs={
+            "uidb64": uidb64,
+            "token": token,
+        },
+    )
+    absurl = "http://" + current_site + relativeLink
+    email_body = "Hi,\n" + "Use this link to reset your password: \n" + absurl
+    data = {
+        "email_body": email_body,
+        "email_subject": "Password reset",
+        "to_email": user.email,
+    }
+    # print("currentsite", current_site)
+    # print("uidb64", uidb64)
+    # print("abs_url", absurl)
+    # print("data", data)
+    # print("relativeLink", relativeLink)
+    # print("token", token)
     email = EmailMessage(
         subject=data["email_subject"], body=data["email_body"], to=[data["to_email"]]
     )
