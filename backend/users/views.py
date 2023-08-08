@@ -98,15 +98,17 @@ class LoginView(generics.GenericAPIView):
 
 
 class LogoutView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request):
-        try:
-            refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            return Response(status=HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            print(e)
-            return Response(status=HTTP_400_BAD_REQUEST)
+        # try:
+        refresh_token = request.data["refresh"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response(status=HTTP_205_RESET_CONTENT)
+        # except Exception as e:
+        print(e)
+        return Response(status=HTTP_400_BAD_REQUEST)
 
 
 class UserView(generics.RetrieveUpdateAPIView):

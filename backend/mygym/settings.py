@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "users",
     "exercises",
     "expenses",
+    "userstats",
 ]
 
 SWAGGER_SETTINGS = {
