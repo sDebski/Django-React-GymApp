@@ -13,7 +13,7 @@ jobs:
       - python/save-cache
       - run: cd backend
       - run:
-          command: ./manage.py test
+          command: python manage.py test
           name: Test
 
 workflows:
