@@ -20,17 +20,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third party api services
     "algoliasearch_django",
+    "drf_yasg",
     # third party packages
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-    "drf_yasg",
     # internal apps
     "frontend",
     "users",
     "exercises",
     "expenses",
     "userstats",
+    "social_auth",
 ]
 
 SWAGGER_SETTINGS = {

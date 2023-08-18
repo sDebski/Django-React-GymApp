@@ -62,8 +62,15 @@ def send_email_reset(request, user):
             "token": token,
         },
     )
+    redirect_url = request.data.get("redirect_url", "")
     absurl = "http://" + current_site + relativeLink
-    email_body = "Hi,\n" + "Use this link to reset your password: \n" + absurl
+    email_body = (
+        "Hi,\n"
+        + "Use this link to reset your password: \n"
+        + absurl
+        + "?redirect_url="
+        + redirect_url
+    )
     data = {
         "email_body": email_body,
         "email_subject": "Password reset",

@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 import datetime
 from expenses.models import Expense
 from rest_framework import status, response
+from utils.renderers import DataRenderer
 
 
 class ExpenseSummaryStats(APIView):
+    renderer_classes = (DataRenderer,)
+
     def get_category(self, expense):
         return expense.category
 
@@ -28,15 +31,10 @@ class ExpenseSummaryStats(APIView):
         )
 
         final = {}
-        # categories = list({expense.category for expense in expenses})
-        categories = list(set(map(self.get_category, expenses)))
+        categories = {expense.category for expense in expenses}
 
-        # for category in categories:
-        #     final[category] = self.get_amount_for_category(expenses, category)
-
-        for expense in expenses:
-            for category in categories:
-                print(category)
-                final[category] = self.get_amount_for_category(expenses, category)
+        for category in categories:
+            print(category)
+            final[category] = self.get_amount_for_category(expenses, category)
 
         return response.Response({"category_data": final}, status=status.HTTP_200_OK)

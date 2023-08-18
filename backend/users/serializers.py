@@ -8,6 +8,7 @@ from django.utils.encoding import (
     force_str,
     DjangoUnicodeDecodeError,
 )
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .utils import send_email_reset
 
@@ -72,9 +73,19 @@ class LoginSerializer(serializers.ModelSerializer):
         write_only=True,
     )
 
+    tokens = serializers.SerializerMethodField()
+
+    def get_tokens(self, obj):
+        user = User.objects.get(email=obj["email"])
+
+        return {
+            "refresh": user.tokens()["refresh"],
+            "access": user.tokens()["access"],
+        }
+
     class Meta:
         model = User
-        fields = ["email", "password"]
+        fields = ["email", "password", "tokens"]
 
     def validate(self, data):
         user = authenticate(**data)
@@ -84,7 +95,28 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed("Invalid credentials, try again")
         if not user.is_active:
             raise AuthenticationFailed("Email is not verified")
-        return user
+
+        return {
+            "email": user.email,
+            "first_name": user.first_name,
+            "tokens": user.tokens,
+        }
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    default_error_messages = {"invalid_token": "Token is expired or invalid"}
+
+    def validate(self, attrs):
+        self.token = attrs["refresh"]
+
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail("invalid_token")
 
 
 class ProfileSerializer(UserSerializer):
@@ -101,6 +133,7 @@ class ProfileAvatarSerializer(serializers.ModelSerializer):
 
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
+    redirect_url = serializers.CharField(max_length=500, required=False)
 
     class Meta:
         fields = ["email"]

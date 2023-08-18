@@ -6,6 +6,7 @@ import os
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserManager(BaseUserManager):
@@ -32,6 +33,14 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+AUTH_PROVIDERS = {
+    "facebook": "facebook",
+    "google": "google",
+    "twitter": "twitter",
+    "email": "email",
+}
+
+
 class User(AbstractBaseUser):
     email = models.EmailField(_("email address"), unique=True)
     first_name = models.CharField(max_length=255)
@@ -44,6 +53,16 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_coach = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
+    auth_provider = models.CharField(
+        max_length=255, blank=False, null=False, default=AUTH_PROVIDERS.get("email")
+    )
+
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
 
     objects = UserManager()
 
@@ -62,35 +81,6 @@ class User(AbstractBaseUser):
     @property
     def first_name_last_name(self):
         return f"{self.first_name} {self.last_name}"
-
-
-# class Exercise(models.Model):
-#     DONE = "done"
-#     CANCELED = "canceled"
-#     AVAILABLE = "active"
-
-#     STATUS = (
-#         (DONE, ("Done - Exercise already took place.")),
-#         (CANCELED, ("Canceled - Exercise canceled")),
-#         (AVAILABLE, ("AVAILABLE - Exercises will take place ")),
-#     )
-#     name = models.CharField(max_length=32, default="Exercise")
-#     host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-#     body = models.TextField(max_length=256)
-#     created = models.DateTimeField(auto_now_add=True)
-#     data = models.DateTimeField(auto_now_add=True)
-
-#     status = models.CharField(
-#         max_length=32,
-#         choices=STATUS,
-#         default=AVAILABLE,
-#     )
-
-#     class Meta:
-#         ordering = ["-created"]
-
-#     def __str__(self) -> str:
-#         return self.name
 
 
 def get_image_filename(instance, filename):

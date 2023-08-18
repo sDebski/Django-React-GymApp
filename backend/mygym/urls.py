@@ -24,6 +24,7 @@ urlpatterns = [
     path("", include("frontend.urls")),
     path("admin/", admin.site.urls),
     path("users/", include("users.urls", namespace="users")),
+    path("social_auth/", include("social_auth.urls", namespace="social_auth")),
     path("exercises/", include("exercises.urls", namespace="exercises")),
     path("search/", include("search.urls", namespace="search")),
     path("expenses/", include("expenses.urls", namespace="expenses")),
@@ -32,6 +33,11 @@ urlpatterns = [
         "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
+    ),
+    path(
+        "swagger/api.json/",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-swagger-without-ui",
     ),
     path(
         "redoc/",
