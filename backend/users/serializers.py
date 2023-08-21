@@ -16,11 +16,12 @@ from .utils import send_email_reset
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "email", "first_name", "last_name", "date_of_birth")
+        fields = ("id", "email", "first_name", "last_name", "date_of_birth", "is_coach")
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
+    redirect_url = serializers.CharField(max_length=500, required=False)
 
     class Meta:
         model = User
@@ -99,7 +100,9 @@ class LoginSerializer(serializers.ModelSerializer):
         return {
             "email": user.email,
             "first_name": user.first_name,
-            "tokens": user.tokens,
+            "last_name": user.last_name,
+            "date_of_birth": user.date_of_birth,
+            "is_coach": user.is_coach,
         }
 
 

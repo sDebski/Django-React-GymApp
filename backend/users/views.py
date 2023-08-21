@@ -48,6 +48,7 @@ class VerifyEmail(APIView):
     @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
         token = request.GET.get("token")
+        redirect_url = request.GET.get("redirect_url")
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, options={"verify_signature": False}
@@ -56,9 +57,7 @@ class VerifyEmail(APIView):
             if not user.is_active:
                 user.is_active = True
                 user.save()
-            msg = "Email successfully activated."
-            status = HTTP_200_OK
-            return Response({"msg": msg}, status=status)
+            return redirect(redirect_url + "?emailVerified=true")
         except jwt.ExpiredSignatureError:
             error_msg = "Activation link expired"
             status = HTTP_400_BAD_REQUEST
@@ -81,6 +80,8 @@ class LoginView(generics.GenericAPIView):
         serializer = self.serializer_class(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        print("user", user)
+        print("serializer.data", serializer.data)
         user_serializer = UserSerializer(user)
         data = serializer.data
         data["user"] = user_serializer.data

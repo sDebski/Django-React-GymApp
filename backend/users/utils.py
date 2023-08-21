@@ -24,14 +24,17 @@ def get_tokens_for_user(user):
 
 def send_activation_email(request, user):
     token = RefreshToken.for_user(user).access_token
-    print(token)
     current_site = get_current_site(request).domain
-    print(current_site)
     relativeLink = reverse("users:email-verify")
     absurl = "http://" + current_site + relativeLink + "?token=" + str(token)
-
+    redirect_url = request.data.get("redirect_url", "")
     email_body = (
-        "Hi " + user.first_name + "! \nUse this link to verify your email: \n" + absurl
+        "Hi "
+        + user.first_name
+        + "! \nUse this link to verify your email: \n"
+        + absurl
+        + "?redirect_url="
+        + redirect_url
     )
 
     data = {

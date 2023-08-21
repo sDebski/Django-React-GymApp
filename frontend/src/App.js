@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import PrivateRoute from "./utils/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
 import RegisterPage from "./pages/RegistrationPage";
+import EmailVerificationPage from "./pages/EmailVerificationPage";
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
             </Route>
             <Route Component={LoginPage} path="login/" />
             <Route Component={RegisterPage} path="register/" />
+            <Route
+              Component={EmailVerificationPage}
+              path="email-verification/"
+            />
           </Routes>
         </AuthProvider>
       </Router>

@@ -3,7 +3,7 @@ import AuthContext from "../context/AuthContext";
 import useAxios from "../utils/useAxios";
 
 const HomePage = () => {
-  let { authTokens, logoutUser } = useContext(AuthContext);
+  let { tokens, logoutUser } = useContext(AuthContext);
   let [exercises, setExercises] = useState([]);
   useEffect(() => {
     getExercises();

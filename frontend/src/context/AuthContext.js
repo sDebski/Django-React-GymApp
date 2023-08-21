@@ -9,16 +9,14 @@ export default AuthContext;
 export const AuthProvider = ({ children }) => {
   let baseURL = "http://127.0.0.1:8000/users/";
 
-  let [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
+  let [tokens, setTokens] = useState(() =>
+    localStorage.getItem("tokens")
+      ? JSON.parse(localStorage.getItem("tokens"))
       : null
   );
-  let [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? localStorage.getItem("authTokens").first_name
-      : null
-  );
+  let [user, setUser] = useState(() => {
+    return localStorage.getItem("user") ? localStorage.getItem("user") : null;
+  });
 
   let [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -38,10 +36,11 @@ export const AuthProvider = ({ children }) => {
     });
     let data = await response.json();
     if (response.status === 200) {
-      setAuthTokens(data);
-      console.log(data);
-      setUser(data.first_name);
-      localStorage.setItem("authTokens", JSON.stringify(data));
+      setTokens(data.tokens);
+      setUser(data.user);
+      console.log("data.user=", data.user);
+      localStorage.setItem("tokens", JSON.stringify(data.tokens));
+      localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/");
     } else {
       alert("Something went wrong!");
@@ -64,10 +63,12 @@ export const AuthProvider = ({ children }) => {
         password2: data["password2"],
         date_of_birth: data["date_of_birth"],
         email: data["email"],
+        redirect_url: "http://localhost:3000/email-verification",
       }),
     });
 
     if (response.status === 201) {
+      alert("An activation mail was send to your mail account!");
       navigate("/login");
     } else {
       alert("Something went wrong!");
@@ -75,9 +76,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   let logoutUser = () => {
-    setAuthTokens(null);
+    setTokens(null);
     setUser(null);
-    localStorage.removeItem("authTokens");
+    localStorage.removeItem("tokens");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -85,19 +87,19 @@ export const AuthProvider = ({ children }) => {
     user: user,
     loginUser: loginUser,
     logoutUser: logoutUser,
-    authTokens: authTokens,
-    setAuthTokens: setAuthTokens,
+    tokens: tokens,
+    setTokens: setTokens,
     setUser: setUser,
     registerUser: registerUser,
   };
 
   useEffect(() => {
-    if (authTokens) {
-      setUser(authTokens.first_name);
+    if (tokens) {
+      setUser(user);
     }
 
     setLoading(false);
-  }, [authTokens, loading]);
+  }, [tokens, loading]);
 
   return (
     <AuthContext.Provider value={contextData}>

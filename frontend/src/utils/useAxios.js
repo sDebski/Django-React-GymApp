@@ -7,27 +7,28 @@ import AuthContext from "../context/AuthContext";
 const baseURL = "http://127.0.0.1:8000/";
 
 const useAxios = () => {
-  const { authTokens, setUser, setAuthTokens } = useContext(AuthContext);
+  const { tokens, setUser, setTokens } = useContext(AuthContext);
 
   const axiosInstance = axios.create({
     baseURL,
     headers: {
-      Authorization: `Bearer ${authTokens?.access}`,
+      Authorization: `Bearer ${tokens?.access}`,
     },
   });
 
   axiosInstance.interceptors.request.use(async (req) => {
-    const user = jwt_decode(authTokens.access);
+    console.log("wchodze do axiosa interceptora");
+    const user = jwt_decode(tokens.access);
     const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
     if (!isExpired) return req;
 
-    const response = await axios.post(`${baseURL}accounts/token-refresh/`, {
-      refresh: authTokens.refresh,
+    const response = await axios.post(`${baseURL}users/token-refresh/`, {
+      refresh: tokens.refresh,
     });
 
-    localStorage.setItem("authTokens", JSON.stringify(response.data));
+    localStorage.setItem("tokens", JSON.stringify(response.data));
 
-    setAuthTokens(response.data);
+    setTokens(response.data);
     setUser(jwt_decode(response.data.access));
 
     req.headers.Authorization = `Bearer ${response.data.access}`;

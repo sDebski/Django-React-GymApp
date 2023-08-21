@@ -18,7 +18,7 @@ const Header = () => {
         </span>
       )}
       <span> | </span>
-      {user && <span>ELO, {user}!</span>}
+      {user && <span>ELO, {user.first_name}!</span>}
     </div>
   );
 };
