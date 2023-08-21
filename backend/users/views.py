@@ -113,7 +113,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
-        return self.request.user.profile
+        return self.request.user.profile.pk.pk
 
 
 class UserAvatarView(generics.RetrieveUpdateAPIView):

@@ -2,10 +2,13 @@ from django.contrib.auth import authenticate
 from users.models import User
 import os
 from rest_framework.exceptions import AuthenticationFailed
+from decouple import config
 
 
 def register_social_user(provider, user_id, email, name):
     filtered_user_by_email = User.objects.filter(email=email)
+    print(config("SOCIAL_SECRET"), "SOCIAL_SECRET decouple")
+    print(os.environ.get("SOCIAL_SECRET"), "SOCIAL_SECRET os")
 
     if filtered_user_by_email.exists():
         if provider == filtered_user_by_email[0].auth_provider:
