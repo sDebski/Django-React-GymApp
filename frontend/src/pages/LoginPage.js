@@ -13,14 +13,16 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AuthContext from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function LoginPage() {
   let { loginUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   let handleForgottenPassword = () => {
-    window.location.replace("users/reset_password/");
+    navigate("/reset-password");
   };
 
   const handleSubmit = (event) => {

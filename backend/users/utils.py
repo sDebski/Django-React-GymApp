@@ -33,7 +33,7 @@ def send_activation_email(request, user):
         + user.first_name
         + "! \nUse this link to verify your email: \n"
         + absurl
-        + "?redirect_url="
+        + "&redirect_url="
         + redirect_url
     )
 

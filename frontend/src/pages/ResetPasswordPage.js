@@ -1,7 +1,4 @@
-import AuthContext from "../context/AuthContext";
-import useAxios from "../utils/useAxios";
-import { useParams } from "react-router-dom";
-import React from "react";
+import React, { useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,49 +8,19 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  Routes,
-  Route,
-  useSearchParams,
-  BrowserRouter,
-} from "react-router-dom";
-import { createContext, useState, useEffect } from "react";
+import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
-const EmailVerificationPage = () => {
-  const [queryParameters] = useSearchParams();
-  const [emailVerified, setEmailVerified] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    let email = queryParameters.get("emailVerified");
-    if (email == "true") setEmailVerified(true);
-    else setEmailVerified(false);
-  });
-
+export default function ResetPasswordPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
-    navigate("/login");
   };
-
-  // return (
-  //   <div>
-  //     {emailVerified ? (
-  //       <p>Email has been succesfully verified! You can now log in!</p>
-  //     ) : (
-  //       <p>Something went wrong...</p>
-  //     )}
-  //   </div>
-  // );
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -68,18 +35,10 @@ const EmailVerificationPage = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            {emailVerified ? (
-              <DoneOutlineIcon />
-            ) : (
-              <SentimentVeryDissatisfiedIcon />
-            )}
+            <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {emailVerified ? (
-              <p>Email has been succesfully verified! You can now log in!</p>
-            ) : (
-              <p>Email verification went wrong...</p>
-            )}
+            Reset Password
           </Typography>
           <Box
             component="form"
@@ -87,19 +46,27 @@ const EmailVerificationPage = () => {
             noValidate
             sx={{ mt: 1 }}
           >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Go to Login Page
+              Reset Password
             </Button>
           </Box>
         </Box>
       </Container>
     </ThemeProvider>
   );
-};
-
-export default EmailVerificationPage;
+}

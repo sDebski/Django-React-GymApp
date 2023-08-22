@@ -8,6 +8,7 @@ import PrivateRoute from "./utils/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
 import RegisterPage from "./pages/RegistrationPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               Component={EmailVerificationPage}
               path="email-verification/"
             />
+            <Route Component={ResetPasswordPage} path="reset-password/" />
           </Routes>
         </AuthProvider>
       </Router>
