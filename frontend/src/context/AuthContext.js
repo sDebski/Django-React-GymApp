@@ -48,9 +48,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   let registerUser = async (data) => {
-    console.log("registration page data: ", data);
-    console.log("registration page first name data: ", data["first_name"]);
-
     let response = await fetch(baseURL + "register/", {
       method: "POST",
       headers: {

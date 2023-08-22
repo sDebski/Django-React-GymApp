@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/AuthContext";
 import RegisterPage from "./pages/RegistrationPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ResetPasswordCompletePage from "./pages/ResetPasswordCompletePage";
 
 function App() {
   return (
@@ -27,6 +28,10 @@ function App() {
               path="email-verification/"
             />
             <Route Component={ResetPasswordPage} path="reset-password/" />
+            <Route
+              Component={ResetPasswordCompletePage}
+              path="reset-password-complete/"
+            />
           </Routes>
         </AuthProvider>
       </Router>

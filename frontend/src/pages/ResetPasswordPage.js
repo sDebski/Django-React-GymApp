@@ -18,8 +18,34 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function ResetPasswordPage() {
+  let baseURL = "http://127.0.0.1:8000/users/";
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const email = data.get("email");
+    resetPassword(email);
+  };
+
+  let resetPassword = async (email) => {
+    let response = await fetch(baseURL + "request-reset-email/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        redirect_url: "http://localhost:3000/reset-password-complete",
+      }),
+    });
+
+    if (response.status === 200) {
+      alert(
+        "An email with password reset link was send to your address email!"
+      );
+    } else {
+      alert("Something went wrong!");
+    }
   };
 
   return (

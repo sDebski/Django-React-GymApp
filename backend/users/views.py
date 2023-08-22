@@ -180,7 +180,7 @@ class PasswordTokenCheckView(generics.GenericAPIView):
 
             return redirect(
                 redirect_url
-                + "?token_valid=True&message=Credentials Valid&uidb64="
+                + "?token_valid=true&message=Credentials Valid&uidb64="
                 + uidb64
                 + "&token="
                 + token
