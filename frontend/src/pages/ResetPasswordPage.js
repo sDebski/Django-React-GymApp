@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
       },
       body: JSON.stringify({
         email: email,
-        redirect_url: "http://localhost:3000/reset-password-complete",
+        redirect_url: "http://localhost:3000/reset-password-new-password",
       }),
     });
 

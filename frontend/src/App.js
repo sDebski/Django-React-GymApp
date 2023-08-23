@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegistrationPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ResetPasswordCompletePage from "./pages/ResetPasswordCompletePage";
+import ResetPasswordNewPasswordPage from "./pages/ResetPasswordNewPasswordPage";
 
 function App() {
   return (
@@ -31,6 +32,10 @@ function App() {
             <Route
               Component={ResetPasswordCompletePage}
               path="reset-password-complete/"
+            />
+            <Route
+              Component={ResetPasswordNewPasswordPage}
+              path="reset-password-new-password/"
             />
           </Routes>
         </AuthProvider>

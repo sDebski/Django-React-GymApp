@@ -186,16 +186,6 @@ class PasswordTokenCheckView(generics.GenericAPIView):
                 + token
             )
 
-            # return Response(
-            #     {
-            #         "success": True,
-            #         "message": "Credentials Valid",
-            #         "uidb64": uidb64,
-            #         "token": token,
-            #     },
-            #     status=HTTP_200_OK,
-            # )
-
         except DjangoUnicodeDecodeError:
             try:
                 if not PasswordResetTokenGenerator().check_token(user):
@@ -206,14 +196,12 @@ class PasswordTokenCheckView(generics.GenericAPIView):
                     {"error": "Token is not valid, please request a new one"},
                     status=HTTP_400_BAD_REQUEST,
                 )
-            # return Response(
-            #     {"error": "Token is not valid, request a new one, please"},
-            #     status=HTTP_400_BAD_REQUEST,
-            # )
 
 
 class SetNewPasswordView(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
+    permission_classes = (AllowAny,)
+    print("wchodze")
 
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
