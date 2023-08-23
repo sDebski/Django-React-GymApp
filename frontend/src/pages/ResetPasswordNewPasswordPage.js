@@ -89,9 +89,7 @@ export default function ResetPasswordNewPasswordPage() {
 
     if (response.status === 200) {
       setPasswordChanged(true);
-      alert(
-        "An email with password reset link was send to your address email!"
-      );
+      alert("Password has been successfully changed!");
     } else {
       alert("Something went wrong!");
     }

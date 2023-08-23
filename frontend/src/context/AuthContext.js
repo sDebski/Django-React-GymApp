@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }) => {
     if (response.status === 200) {
       setTokens(data.tokens);
       setUser(data.user);
-      console.log("data.user=", data.user);
       localStorage.setItem("tokens", JSON.stringify(data.tokens));
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/");

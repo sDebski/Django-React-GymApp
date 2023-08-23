@@ -11,13 +11,18 @@ import EmailVerificationPage from "./pages/EmailVerificationPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ResetPasswordCompletePage from "./pages/ResetPasswordCompletePage";
 import ResetPasswordNewPasswordPage from "./pages/ResetPasswordNewPasswordPage";
+import Navbar from "./components/Navbar";
+import ExpensesPage from "./pages/ExpensesPage";
+import ProfilePage from "./pages/ProfilePage";
+import AccountPage from "./pages/AccountPage";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   return (
     <div className="App">
       <Router>
         <AuthProvider>
-          <Header />
+          <Navbar />
           <Routes>
             <Route exact path="/" element={<PrivateRoute />}>
               <Route exact path="/" element={<HomePage />} />
@@ -37,6 +42,10 @@ function App() {
               Component={ResetPasswordNewPasswordPage}
               path="reset-password-new-password/"
             />
+            <Route Component={ExpensesPage} path="expenses/" />
+            <Route Component={ProfilePage} path="profile/" />
+            <Route Component={AccountPage} path="account/" />
+            <Route Component={DashboardPage} path="dashboard/" />
           </Routes>
         </AuthProvider>
       </Router>
