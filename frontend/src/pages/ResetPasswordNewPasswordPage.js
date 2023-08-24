@@ -46,7 +46,7 @@ export default function ResetPasswordNewPasswordPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const registerData = {
+    const submitData = {
       password: data.get("password"),
       password2: data.get("password2"),
     };
@@ -56,22 +56,22 @@ export default function ResetPasswordNewPasswordPage() {
       return regExpr.test(pass);
     };
 
-    if ((registerData.password === "") | (registerData.password2 === "")) {
+    if ((submitData.password === "") | (submitData.password2 === "")) {
       alert("Fill up all fields!");
       return;
     }
 
-    if (!validatePassword(registerData.password)) {
+    if (!validatePassword(submitData.password)) {
       alert("Password has to be [6-16] characters long and contain a number!");
       return;
     }
 
-    if (registerData.password !== registerData.password2) {
+    if (submitData.password !== submitData.password2) {
       alert("Passwords do not match!");
       return;
     }
 
-    resetPasswordSetNewPassword(registerData);
+    resetPasswordSetNewPassword(submitData);
   };
 
   let resetPasswordSetNewPassword = async (data) => {

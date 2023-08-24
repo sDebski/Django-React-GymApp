@@ -19,7 +19,7 @@ class ExpenseSummaryStats(APIView):
         for expense in expenses_for_category:
             amount += expense.amount
 
-        return {"amount": str(amount)}
+        return str(amount)
 
     def get(self, request):
         todays_date = datetime.date.today()
@@ -30,11 +30,16 @@ class ExpenseSummaryStats(APIView):
             date__lte=todays_date,
         )
 
-        final = {}
+        final = []
         categories = {expense.category for expense in expenses}
 
         for category in categories:
-            print(category)
-            final[category] = self.get_amount_for_category(expenses, category)
+            final.append(
+                {
+                    "category": category,
+                    "amount": self.get_amount_for_category(expenses, category),
+                }
+            )
+            # final[category] = self.get_amount_for_category(expenses, category)
 
         return response.Response({"category_data": final}, status=status.HTTP_200_OK)

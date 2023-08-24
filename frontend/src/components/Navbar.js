@@ -38,12 +38,9 @@ const ResponsiveAppBar = () => {
   ];
 
   const handleOpenNavMenu = (event) => {
-    console.log("Wchodze! Open navbar");
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
-    console.log("Wchodze! Open user");
-    console.log(event.currentTarget);
     setAnchorElUser(event.currentTarget);
   };
 
@@ -63,8 +60,8 @@ const ResponsiveAppBar = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -123,8 +120,8 @@ const ResponsiveAppBar = () => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -151,51 +148,52 @@ const ResponsiveAppBar = () => {
               </Button>
             ))}
           </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings_authenticated.map((setting) => (
-                <MenuItem
-                  component={Link}
-                  to={setting.url}
-                  key={setting.name}
-                  onClick={handleCloseUserMenu}
-                >
-                  <Typography textAlign="center">{setting.name}</Typography>
-                </MenuItem>
-              ))}
-              {user !== null && (
-                <MenuItem
-                  component={Link}
-                  to="login/"
-                  key="logout"
-                  onClick={logoutUser}
-                >
-                  <Typography textAlign="center">Logout</Typography>
-                </MenuItem>
-              )}
-            </Menu>
-          </Box>
+          {user && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings_authenticated.map((setting) => (
+                  <MenuItem
+                    component={Link}
+                    to={setting.url}
+                    key={setting.name}
+                    onClick={handleCloseUserMenu}
+                  >
+                    <Typography textAlign="center">{setting.name}</Typography>
+                  </MenuItem>
+                ))}
+                {user !== null && (
+                  <MenuItem
+                    component={Link}
+                    to="login/"
+                    key="logout"
+                    onClick={logoutUser}
+                  >
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                )}
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
