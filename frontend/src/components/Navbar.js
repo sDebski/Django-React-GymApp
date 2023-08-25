@@ -14,11 +14,18 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import useAxios from "../utils/useAxios";
+import { useEffect, useState, useContext } from "react";
 
 const ResponsiveAppBar = () => {
   let { user, logoutUser, registerUser } = React.useContext(AuthContext);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  let api = useAxios();
+
+  let [userAvatar, setUserAvatar] = React.useState(
+    "http://127.0.0.1:8000/media/profiles/skwdemailcom-pobrane.jpg"
+  );
 
   const pages = [
     { name: "Expenses", url: "expenses/" },
@@ -37,6 +44,18 @@ const ResponsiveAppBar = () => {
     { name: "Dashboard", url: "dashboard/" },
   ];
 
+  const getAvatar = async () => {
+    if (user !== null) {
+      let response = await api.get("users/profile/avatar");
+      if (response.status === 200) {
+        console.log(response.data);
+        if (response.data.avatar !== null) {
+          setUserAvatar(response.data.avatar);
+        }
+      }
+    }
+  };
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -51,6 +70,10 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  React.useEffect(() => {
+    getAvatar();
+  });
 
   return (
     <AppBar position="static">
@@ -152,7 +175,7 @@ const ResponsiveAppBar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src={userAvatar} />
                 </IconButton>
               </Tooltip>
               <Menu

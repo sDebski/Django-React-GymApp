@@ -34,13 +34,30 @@ import PersonIcon from "@mui/icons-material/Person";
 const defaultTheme = createTheme();
 
 const ProfilePage = () => {
+  let api = useAxios();
   let { user } = useContext(AuthContext);
   let [profile, setProfile] = useState({ bio: "" });
+  let [image, setImage] = useState(null);
+  let [avatar, setAvatar] = useState(
+    "http://127.0.0.1:8000/media/profiles/skwdemailcom-pobrane.jpg"
+  );
   useEffect(() => {
     getProfile();
+    getAvatar();
   }, []);
 
-  let api = useAxios();
+  const getAvatar = async () => {
+    let response = await api.get("users/profile/avatar");
+    if (response.status === 200) {
+      if (response.data.avatar !== null) {
+        setAvatar(response.data.avatar);
+      }
+    }
+  };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   let getProfile = async () => {
     let response = await api.get("/users/profile/");
@@ -65,6 +82,23 @@ const ProfilePage = () => {
     }
   };
 
+  const handleAvatarSubmit = async (e) => {
+    e.preventDefault();
+    let form_data = new FormData();
+    form_data.append("avatar", image);
+    console.log("formData", form_data);
+    let response = await api
+      .put("users/profile/avatar/", form_data)
+      .then((response) => {
+        if (response.status == 200) {
+          getAvatar();
+        }
+      })
+      .catch((error) => {
+        alert("Something went wrong!");
+      });
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -79,10 +113,14 @@ const ProfilePage = () => {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <PersonIcon />
           </Avatar>
+          <Avatar
+            sx={{ width: 250, height: 250, bgcolor: "secondary.main" }}
+            alt="Remy Sharp"
+            src={avatar}
+          />
           <Typography component="h1" variant="h5">
             {user && user.first_name} Profile
           </Typography>
-
           <Box
             component="form"
             noValidate
@@ -91,7 +129,7 @@ const ProfilePage = () => {
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
-                <Typography component="h6" variant="h6">
+                <Typography component="h4" variant="h4">
                   Bio
                 </Typography>
                 <TextField
@@ -114,6 +152,45 @@ const ProfilePage = () => {
               sx={{ mt: 3, mb: 2 }}
             >
               Update profile
+            </Button>
+          </Box>
+        </Box>
+        <Divider />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleAvatarSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12}>
+                <Typography component="h4" variant="h4">
+                  Update Avatar
+                </Typography>
+                <TextField
+                  type="file"
+                  id="image"
+                  accept="image/png, image/jpeg"
+                  onChange={handleImageChange}
+                  required
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Update Avatar
             </Button>
           </Box>
         </Box>

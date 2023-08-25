@@ -29,6 +29,8 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const defaultTheme = createTheme();
 
@@ -36,6 +38,8 @@ const ExpensesPage = () => {
   let baseURL = "http://127.0.0.1:8000/";
   let [categoryExpenses, setCategoryExpenses] = useState([]);
   let [allExpenses, setAllExpenses] = useState([]);
+  let [next, setNext] = useState(null);
+  let [previous, setPrevious] = useState(null);
   const [currentCategory, setCurrentCategory] = useState("GYM_MEMBERSHIP");
   const changeCategory = (newCategory) => {
     setCurrentCategory(newCategory);
@@ -71,13 +75,15 @@ const ExpensesPage = () => {
     }
   };
 
-  let getAllExpenses = async () => {
-    let response = await api.get("expenses/");
+  let getAllExpenses = async (page = "") => {
+    let response = await api.get("expenses/" + page);
     if (response.status === 200) {
       let data = response.data;
       console.log("getAllExpenses", data);
-      if (data.length > 0) {
-        setAllExpenses(data);
+      if (data.results.length > 0) {
+        setAllExpenses(data.results);
+        setNext(data.next);
+        setPrevious(data.previous);
       }
     }
   };
@@ -107,6 +113,11 @@ const ExpensesPage = () => {
       getCategoryExpenses();
       alert("You have succesfully deleted the expense!");
     }
+  };
+  const handlePageChange = async (page) => {
+    console.log(page);
+    let page_data = page.split("?")[1];
+    getAllExpenses("?" + page_data);
   };
 
   useEffect(() => {
@@ -192,6 +203,43 @@ const ExpensesPage = () => {
               </List>
             </nav>
           ))}
+          <Box
+            sx={{
+              marginTop: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={2} sm={6}>
+                {previous && (
+                  <IconButton
+                    edge="end"
+                    aria-label="comments"
+                    onClick={() => handlePageChange(previous)}
+                  >
+                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                      <ChevronLeftIcon />
+                    </Avatar>
+                  </IconButton>
+                )}
+              </Grid>
+              <Grid item xs={2} sm={6}>
+                {next && (
+                  <IconButton
+                    edge="end"
+                    aria-label="comments"
+                    onClick={() => handlePageChange(next)}
+                  >
+                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                      <ChevronRightIcon />
+                    </Avatar>
+                  </IconButton>
+                )}
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
         <CssBaseline />
         <Divider />
@@ -232,7 +280,7 @@ const ExpensesPage = () => {
                   <option value="GYM_MEMBERSHIP">GYM MEMBERSHIP</option>
                   <option value="GYM_GEAR">GYM GEAR</option>
                   <option value="FOOD">FOOD</option>
-                  <option value="FOOPERSONAL_TRAINER">PERSONAL TRAINER</option>
+                  <option value="PERSONAL_TRAINER">PERSONAL TRAINER</option>
                   <option value="OTHERS">OTHERS</option>
                 </select>
               </Grid>
