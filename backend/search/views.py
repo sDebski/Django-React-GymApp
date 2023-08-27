@@ -48,4 +48,4 @@ class SerachPublicAPIKeysView(views.APIView):
             "APPLICATION_ID": settings.APPLICATION_ID,
             "PUBLIC_API_KEY": settings.PUBLIC_API_KEY,
         }
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({"data": data}, status=status.HTTP_200_OK)

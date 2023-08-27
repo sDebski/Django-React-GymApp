@@ -16,6 +16,8 @@ import ExpensesPage from "./pages/ExpensesPage";
 import ProfilePage from "./pages/ProfilePage";
 import AccountPage from "./pages/AccountPage";
 import DashboardPage from "./pages/DashboardPage";
+import ExercisesPage from "./pages/ExercisesPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
             <Route Component={ProfilePage} path="profile/" />
             <Route Component={AccountPage} path="account/" />
             <Route Component={DashboardPage} path="dashboard/" />
+            <Route Component={ExercisesPage} path="exercises/" />
+            <Route Component={ChatPage} path="chat/" />
           </Routes>
         </AuthProvider>
       </Router>

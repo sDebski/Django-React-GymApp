@@ -15,7 +15,6 @@ import AdbIcon from "@mui/icons-material/Adb";
 import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import useAxios from "../utils/useAxios";
-import { useEffect, useState, useContext } from "react";
 
 const ResponsiveAppBar = () => {
   let { user, logoutUser, registerUser } = React.useContext(AuthContext);
@@ -29,8 +28,8 @@ const ResponsiveAppBar = () => {
 
   const pages = [
     { name: "Expenses", url: "expenses/" },
-    { name: "Pricing", url: "/" },
-    { name: "Blog", url: "/" },
+    { name: "Exercises", url: "exercises/" },
+    { name: "Chat", url: "chat/" },
   ];
 
   const settings_not_authenticated = [
