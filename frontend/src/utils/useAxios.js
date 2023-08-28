@@ -25,12 +25,13 @@ const useAxios = () => {
       refresh: tokens.refresh,
     });
 
-    localStorage.setItem("tokens", JSON.stringify(response.data));
+    localStorage.setItem("tokens", JSON.stringify(response.data.tokens));
+    localStorage.setItem("user", JSON.stringify(response.data.user));
 
-    setTokens(response.data);
-    setUser(jwt_decode(response.data.access));
+    setTokens(response.data.tokens);
+    setUser(response.data.user);
 
-    req.headers.Authorization = `Bearer ${response.data.access}`;
+    req.headers.Authorization = `Bearer ${response.data.tokens.access}`;
     return req;
   });
 

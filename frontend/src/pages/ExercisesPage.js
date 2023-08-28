@@ -28,7 +28,7 @@ import Divider from "@mui/material/Divider";
 import InboxIcon from "@mui/icons-material/Inbox";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton } from "@mui/material";
+import { IconButton, useRadioGroup } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchComponent from "../components/SearchComponent";
@@ -37,155 +37,94 @@ import ExerciseHitComponent from "../components/ExerciseHitComponent";
 const defaultTheme = createTheme();
 
 const ExercisesPage = () => {
+  let { user } = useContext(AuthContext);
   const searchingObject = {
     index: "skwde_Exercise",
     hitComponent: ExerciseHitComponent,
   };
   let baseURL = "http://127.0.0.1:8000/";
-  let [categoryExpenses, setCategoryExpenses] = useState([]);
-  let [allExpenses, setAllExpenses] = useState([]);
-  let [next, setNext] = useState(null);
-  let [previous, setPrevious] = useState(null);
-  const [currentCategory, setCurrentCategory] = useState("GYM_MEMBERSHIP");
+  const [currentCategory, setCurrentCategory] = useState(0);
   const changeCategory = (newCategory) => {
     setCurrentCategory(newCategory);
   };
   let api = useAxios();
+  const [loaded, setLoaded] = useState(false);
+  const [categories, setCategories] = useState(null);
+
+  const getCategories = async () => {
+    await fetch(baseURL + "exercises/categories", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.results);
+        setCategories(data.results);
+      })
+      .then(() => setLoaded(true));
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let listOfCategories = [];
+    listOfCategories.push(currentCategory + 1);
     const data = new FormData(event.currentTarget);
     const submitData = {
-      category: currentCategory,
-      amount: data.get("amount"),
-      description: data.get("description"),
-      date: data.get("date_of_expense"),
+      categories: listOfCategories,
+      title: data.get("title"),
+      body: data.get("body"),
     };
 
-    if (isNaN(+submitData.amount)) {
-      alert("Amount has to be a valid number");
-      return;
-    }
-    addExpense(submitData);
+    addExercise(submitData);
   };
 
-  let getCategoryExpenses = async () => {
-    console.log("Biore categories");
-    let response = await api.get("userstats/expense-category");
-    if (response.status === 200) {
-      let data = response.data.data;
-      if (data.category_data.length > 0) {
-        console.log("getCategoryExpenses", data.category_data);
-        setCategoryExpenses(data.category_data);
-      }
-    }
-  };
-
-  let getAllExpenses = async (page = "") => {
-    let response = await api.get("expenses/" + page);
-    if (response.status === 200) {
-      let data = response.data;
-      console.log("getAllExpenses", data);
-      if (data.results.length > 0) {
-        setAllExpenses(data.results);
-        setNext(data.next);
-        setPrevious(data.previous);
-      }
-    }
-  };
-
-  const addExpense = async (data) => {
+  const addExercise = async (data) => {
     console.log(data);
-    let response = await api.post("expenses/", {
-      category: data["category"],
-      amount: data["amount"],
-      description: data["description"],
-      date: data["date"],
+    let response = await api.post("exercises/", {
+      categories: data["categories"],
+      title: data["title"],
+      body: data["body"],
     });
     if (response.status === 201) {
-      alert("Expense has been successfully added!");
-      getCategoryExpenses();
-      getAllExpenses();
+      alert("Exercise has been successfully added!");
     } else {
       alert("Something went wrong!");
     }
   };
 
   let handleDeleteExpense = async (id) => {
-    console.log("Usuwam expense o id", id);
-    let response = await api.delete(`expenses/${id}`);
-    if (response.status === 204) {
-      getAllExpenses();
-      getCategoryExpenses();
-      alert("You have succesfully deleted the expense!");
-    }
-  };
-  const handlePageChange = async (page) => {
-    console.log(page);
-    let page_data = page.split("?")[1];
-    getAllExpenses("?" + page_data);
+    console.log("Usuwam exercise o id", id);
+    // let response = await api.delete(`expenses/${id}`);
+    // if (response.status === 204) {
+    //   getAllExpenses();
+    //   getCategoryExpenses();
+    //   alert("You have succesfully deleted the expense!");
+    // }
   };
 
   useEffect(() => {
-    getCategoryExpenses();
-    getAllExpenses();
-  }, []);
+    console.log(user);
+    if (user.is_coach) {
+      getCategories();
+    }
+    if (loaded) {
+      getCategories();
+      console.log("categories", categories);
+    }
+    // getCategoryExpenses();
+    // getAllExpenses();
+  }, [loaded, user]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <CssBaseline />
       <Container component="main" maxWidth="xs">
-        <div>
-          <p>Chat Page</p>
-          <SearchComponent searchingObject={searchingObject} />
-        </div>
+        <Typography variant="h6">Search through exercises!</Typography>
+        <SearchComponent searchingObject={searchingObject} />
         <Divider />
-        <Typography variant="h5">Exercises</Typography>
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "left",
-          }}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={6} sm={2}>
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <FormatListBulletedIcon />
-              </Avatar>
-            </Grid>
-            <Grid item xs={6} sm={10}>
-              <Typography variant="h5">All Expenses</Typography>
-            </Grid>
-          </Grid>
-          {allExpenses.map((expense) => (
-            <nav aria-label="secondary mailbox folders">
-              <List>
-                <ListItem
-                  key={expense.id}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="comments"
-                      onClick={() => handleDeleteExpense(expense.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                  disablePadding
-                >
-                  <ListItemButton
-                    onClick={() => alert(`Description: ${expense.description}`)}
-                  >
-                    <ListItemText
-                      primary={`${expense.category} | ${expense.amount}$`}
-                      secondary={expense.date}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </nav>
-          ))}
+        {user.is_coach && (
           <Box
             sx={{
               marginTop: 8,
@@ -195,119 +134,71 @@ const ExercisesPage = () => {
             }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={2} sm={6}>
-                {previous && (
-                  <IconButton
-                    edge="end"
-                    aria-label="comments"
-                    onClick={() => handlePageChange(previous)}
-                  >
-                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                      <ChevronLeftIcon />
-                    </Avatar>
-                  </IconButton>
-                )}
+              <Grid item xs={6} sm={2}>
+                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                  <AddIcon />
+                </Avatar>
               </Grid>
-              <Grid item xs={2} sm={6}>
-                {next && (
-                  <IconButton
-                    edge="end"
-                    aria-label="comments"
-                    onClick={() => handlePageChange(next)}
-                  >
-                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                      <ChevronRightIcon />
-                    </Avatar>
-                  </IconButton>
-                )}
+              <Grid item xs={6} sm={10}>
+                <Typography component="h1" variant="h6">
+                  Add Exercise (For Coach)
+                </Typography>
               </Grid>
             </Grid>
-          </Box>
-        </Box>
-        <CssBaseline />
-        <Divider />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={6} sm={2}>
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <AddIcon />
-              </Avatar>
-            </Grid>
-            <Grid item xs={6} sm={10}>
-              <Typography component="h1" variant="h5">
-                Add Expense
-              </Typography>
-            </Grid>
-          </Grid>
 
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={6} sm={6}>
-                <select
-                  required
-                  onChange={(event) => changeCategory(event.target.value)}
-                  value={currentCategory}
-                >
-                  <option value="GYM_MEMBERSHIP">GYM MEMBERSHIP</option>
-                  <option value="GYM_GEAR">GYM GEAR</option>
-                  <option value="FOOD">FOOD</option>
-                  <option value="PERSONAL_TRAINER">PERSONAL TRAINER</option>
-                  <option value="OTHERS">OTHERS</option>
-                </select>
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="amount"
-                  label="Amount"
-                  name="amount"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="description"
-                  label="Description"
-                  name="description"
-                  autoComplete="description"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <span>Date of Expense</span>
-                <TextField
-                  required
-                  fullWidth
-                  name="date_of_expense"
-                  type="date"
-                  id="date_of_expense"
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 3 }}
             >
-              Add Expense
-            </Button>
+              <Grid container spacing={2}>
+                <Grid item xs={6} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="title"
+                    label="Title"
+                    name="title"
+                    autoComplete="family-name"
+                  />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <select
+                    required
+                    onChange={(event) => changeCategory(event.target.value)}
+                    value={currentCategory}
+                  >
+                    {loaded &&
+                      categories.map((category) => (
+                        <option value={category.id}>{category.name}</option>
+                      ))}
+                  </select>
+                </Grid>
+
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="body"
+                    label="Description"
+                    name="body"
+                    autoComplete="body"
+                  />
+                </Grid>
+              </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Add Exercise
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        )}
+        <Divider />
       </Container>
     </ThemeProvider>
   );

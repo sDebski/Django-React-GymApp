@@ -90,12 +90,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (tokens) {
-      setUser(user);
-    }
-
+    console.log("przeladowuje");
+    console.log("user", user);
+    console.log("tokens", tokens);
     setLoading(false);
-  }, [tokens, loading]);
+  }, [loading]);
 
   return (
     <AuthContext.Provider value={contextData}>

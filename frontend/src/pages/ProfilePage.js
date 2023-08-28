@@ -62,7 +62,6 @@ const ProfilePage = () => {
   let getProfile = async () => {
     let response = await api.get("/users/profile/");
     if (response.status === 200) {
-      console.log(response.data);
       setProfile(response.data);
     }
   };
@@ -73,7 +72,6 @@ const ProfilePage = () => {
   };
 
   const updateUserBio = async () => {
-    console.log(profile.bio);
     let response = await api.put("/users/profile/", {
       bio: profile.bio,
     });
@@ -86,7 +84,6 @@ const ProfilePage = () => {
     e.preventDefault();
     let form_data = new FormData();
     form_data.append("avatar", image);
-    console.log("formData", form_data);
     let response = await api
       .put("users/profile/avatar/", form_data)
       .then((response) => {

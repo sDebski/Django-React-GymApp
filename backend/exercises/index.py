@@ -11,6 +11,7 @@ class ExerciseIndex(AlgoliaIndex):
         "get_owner_first_name_last_name",
         "get_categories",
         "get_likes",
+        "get_owner_id",
     ]
 
     settings = {

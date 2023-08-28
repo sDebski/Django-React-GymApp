@@ -47,7 +47,6 @@ const ResponsiveAppBar = () => {
     if (user !== null) {
       let response = await api.get("users/profile/avatar");
       if (response.status === 200) {
-        console.log(response.data);
         if (response.data.avatar !== null) {
           setUserAvatar(response.data.avatar);
         }

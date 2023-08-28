@@ -12,6 +12,7 @@ const SearchComponent = ({ searchingObject }) => {
   const [algoliaAPIKeys, setAlgoliaAPIKeys] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [searchClient, setSearchClient] = useState({});
+
   //ustawic dynamiczny indeks bazujacy na propsach
 
   const getAlgoliaAPIKeys = async () => {
@@ -23,26 +24,23 @@ const SearchComponent = ({ searchingObject }) => {
     });
     let data = await response.json();
     if (response.status === 200) {
-      console.log(data.data);
       setAlgoliaAPIKeys({ ...data.data });
       setSearchClient(
         algoliasearch(data.data.APPLICATION_ID, data.data.PUBLIC_API_KEY)
       );
       setLoaded(true);
-      console.log("searchClient", searchClient);
     } else {
       alert("Something went wrong with getting Algolia API Keys!");
     }
   };
+
   useEffect(() => {
-    console.log(searchingObject);
     getAlgoliaAPIKeys();
   }, []);
 
   return (
     <div>
-      <p>Search</p>
-      <p>{searchingObject.index}</p>
+      <p>Search at index: {searchingObject.index}</p>
       {loaded && (
         <InstantSearch
           searchClient={searchClient}

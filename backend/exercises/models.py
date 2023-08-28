@@ -60,6 +60,9 @@ class Exercise(models.Model):
     def get_owner_first_name_last_name(self):
         return self.owner.first_name_last_name
 
+    def get_owner_id(self):
+        return self.owner.id
+
     class Meta:
         ordering = ["-created_at"]
 
