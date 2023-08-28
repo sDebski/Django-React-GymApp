@@ -35,6 +35,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchComponent from "../components/SearchComponent";
 import ExerciseHitComponent from "../components/ExerciseHitComponent";
 import { useNavigate } from "react-router-dom";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 
 const defaultTheme = createTheme();
 
@@ -46,6 +48,7 @@ const ExerciseDetailsPage = () => {
   const [exercise, setExercise] = useState({});
   const baseURL = "http://127.0.0.1:8000/exercises/";
   const navigate = useNavigate();
+  const [likeDislike, setLikeDislike] = useState(false);
 
   let handleDeleteExercise = async (id) => {
     console.log("Usuwam expense o id", id);
@@ -72,11 +75,42 @@ const ExerciseDetailsPage = () => {
 
   const handleCommentAddSubmit = (event) => {
     event.preventDefault();
-    console.log();
+    const data = new FormData(event.currentTarget);
+    const body = data.get("body");
+    addComment(body);
+  };
+
+  const addComment = async (body) => {
+    console.log("body", body);
+    let response = await api.post(`exercises/${id}/comment/`, {
+      exercise: id,
+      body: body,
+    });
+    if (response.status == 201) getExerciseDetail();
+  };
+
+  const handleLikeDislikeButton = async () => {
+    let response = await api.get(`exercises/like/${id}`);
+    if (response.status === 200) {
+      alert("You liked/disliked thi exercise");
+      setLikeDislike(!likeDislike);
+      getExerciseDetail();
+    }
+  };
+  const checkIfExerciseLikedByUser = () => {
+    let result = false;
+    for (let like in exercise.likes) {
+      if (like[0] == user.first_name && like[1] == user.last_name) {
+        result = true;
+        break;
+      }
+    }
+    setLikeDislike(result);
   };
 
   useEffect(() => {
     getExerciseDetail();
+    checkIfExerciseLikedByUser();
   }, []);
 
   return (
@@ -91,10 +125,12 @@ const ExerciseDetailsPage = () => {
             alignItems: "center",
           }}
         >
-          <Typography>
+          <Typography variant="h6">
             {exercise.owner} | {exercise.title}
           </Typography>
+          <Typography>{exercise.body}</Typography>
           <Divider />
+
           {exercise.owner === user.first_name + " " + user.last_name && (
             <IconButton
               edge="end"
@@ -102,6 +138,15 @@ const ExerciseDetailsPage = () => {
               onClick={() => handleDeleteExercise(exercise.id)}
             >
               <DeleteIcon />
+            </IconButton>
+          )}
+          {user && (
+            <IconButton
+              edge="end"
+              aria-label="comments"
+              onClick={() => handleLikeDislikeButton(exercise.id)}
+            >
+              {likeDislike ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
             </IconButton>
           )}
           <List>

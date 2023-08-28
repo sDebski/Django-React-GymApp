@@ -35,6 +35,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
+    print("Jestem")
 
     def get_queryset(self):
         res = super().get_queryset()

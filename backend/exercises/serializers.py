@@ -44,7 +44,7 @@ class ExerciseWriteSerializer(serializers.ModelSerializer):
         ]
 
 
-class CommentReadSerializer(serializers.Serializer):
+class CommentReadSerializer(serializers.ModelSerializer):
     owner = serializers.CharField(read_only=True, source="owner.first_name_last_name")
 
     class Meta:
@@ -52,8 +52,8 @@ class CommentReadSerializer(serializers.Serializer):
         fields = "__all__"
 
 
-class CommentWriteSerializer(serializers.Serializer):
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+class CommentWriteSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Comment
