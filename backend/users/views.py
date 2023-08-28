@@ -78,6 +78,7 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
+        print("jestem w post")
         serializer = self.serializer_class(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data

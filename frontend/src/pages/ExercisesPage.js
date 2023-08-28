@@ -31,10 +31,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import SearchComponent from "../components/SearchComponent";
+import ExerciseHitComponent from "../components/ExerciseHitComponent";
 
 const defaultTheme = createTheme();
 
 const ExercisesPage = () => {
+  const searchingObject = {
+    index: "skwde_Exercise",
+    hitComponent: ExerciseHitComponent,
+  };
   let baseURL = "http://127.0.0.1:8000/";
   let [categoryExpenses, setCategoryExpenses] = useState([]);
   let [allExpenses, setAllExpenses] = useState([]);
@@ -128,36 +134,12 @@ const ExercisesPage = () => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
-        <Typography variant="h5">Exercises</Typography>
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "left",
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={6} sm={2}>
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <AttachMoneyIcon />
-              </Avatar>
-            </Grid>
-            <Grid item xs={6} sm={10}>
-              <Typography variant="h5">Exercises</Typography>
-            </Grid>
-          </Grid>
-          {categoryExpenses.map((expense) => (
-            <React.Fragment key={expense.category}>
-              <Grid item xs={6} sm={6}>
-                <Typography variant="h8">
-                  {expense.category} | {expense.amount} $
-                </Typography>
-              </Grid>
-            </React.Fragment>
-          ))}
-        </Box>
+        <div>
+          <p>Chat Page</p>
+          <SearchComponent searchingObject={searchingObject} />
+        </div>
         <Divider />
+        <Typography variant="h5">Exercises</Typography>
         <Box
           sx={{
             marginTop: 8,

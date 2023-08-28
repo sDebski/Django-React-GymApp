@@ -136,7 +136,7 @@ const ExpensesPage = () => {
             alignItems: "left",
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid item xs={6} sm={2}>
               <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
                 <AttachMoneyIcon />
@@ -147,13 +147,16 @@ const ExpensesPage = () => {
             </Grid>
           </Grid>
           {categoryExpenses.map((expense) => (
-            <React.Fragment key={expense.category}>
-              <Grid item xs={6} sm={6}>
-                <Typography variant="h8">
-                  {expense.category} | {expense.amount} $
-                </Typography>
-              </Grid>
-            </React.Fragment>
+            <nav aria-label="secondary mailbox folders">
+              <List>
+                <ListItem key={expense.id} disablePadding>
+                  <ListItemText
+                    primary={expense.category}
+                    secondary={`${expense.amount}$`}
+                  />
+                </ListItem>
+              </List>
+            </nav>
           ))}
         </Box>
         <Divider />

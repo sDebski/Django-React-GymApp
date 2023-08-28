@@ -1,9 +1,13 @@
 import algoliasearch from "algoliasearch/lite";
 import { InstantSearch, SearchBox, Hits } from "react-instantsearch";
 import { useEffect, useState, useContext } from "react";
-import HitComponent from "./HitComponent";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
-const SearchComponent = (SearchingObject) => {
+const SearchComponent = ({ searchingObject }) => {
   let baseURL = "http://127.0.0.1:8000/";
   const [algoliaAPIKeys, setAlgoliaAPIKeys] = useState(null);
   const [loaded, setLoaded] = useState(false);
@@ -31,16 +35,23 @@ const SearchComponent = (SearchingObject) => {
     }
   };
   useEffect(() => {
+    console.log(searchingObject);
     getAlgoliaAPIKeys();
   }, []);
 
   return (
     <div>
       <p>Search</p>
+      <p>{searchingObject.index}</p>
       {loaded && (
-        <InstantSearch searchClient={searchClient} indexName="skwde_Exercise">
+        <InstantSearch
+          searchClient={searchClient}
+          indexName={searchingObject.index}
+        >
           <SearchBox />
-          <Hits hitComponent={HitComponent} />
+          <List>
+            <Hits hitComponent={searchingObject.hitComponent} />
+          </List>
         </InstantSearch>
       )}
     </div>
