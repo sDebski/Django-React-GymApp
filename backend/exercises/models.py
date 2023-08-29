@@ -18,7 +18,7 @@ class Category(models.Model):
         verbose_name_plural = _("Categories")
 
     def __str__(self):
-        return self.name
+        return f"ID: {self.id} | {self.name}"
 
     class Meta:
         ordering = ["-name"]

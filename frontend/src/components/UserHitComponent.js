@@ -12,8 +12,12 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchComponent from "../components/SearchComponent";
 import ExerciseHitComponent from "../components/ExerciseHitComponent";
+import ChatIcon from "@mui/icons-material/Chat";
 
 function UserHitComponent({ hit }) {
+  const handleChat = (id) => {
+    console.log(id);
+  };
   return (
     <ListItem
       key={hit.objectID}
@@ -21,21 +25,17 @@ function UserHitComponent({ hit }) {
         <IconButton
           edge="end"
           aria-label="comments"
-          // onClick={() => handleDeleteExpense(expense.id)}
+          onClick={() => handleChat(hit.objectID)}
         >
-          <DeleteIcon />
+          <ChatIcon />
         </IconButton>
       }
       disablePadding
     >
-      <ListItemButton
-      // onClick={() => alert(`Description: ${expense.description}`)}
-      >
-        <ListItemText
-          primary={`${hit.first_name} | ${hit.last_name}$`}
-          secondary={hit.objectID}
-        />
-      </ListItemButton>
+      <ListItemText
+        primary={`${hit.first_name} | ${hit.last_name}$`}
+        secondary={hit.objectID}
+      />
     </ListItem>
   );
 }

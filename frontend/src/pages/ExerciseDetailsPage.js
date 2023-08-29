@@ -37,6 +37,7 @@ import ExerciseHitComponent from "../components/ExerciseHitComponent";
 import { useNavigate } from "react-router-dom";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
+import ChatIcon from "@mui/icons-material/Chat";
 
 const defaultTheme = createTheme();
 
@@ -46,12 +47,14 @@ const ExerciseDetailsPage = () => {
   let { user } = useContext(AuthContext);
   const { id } = useParams();
   const [exercise, setExercise] = useState({});
+  const [currentComment, setCurrentComment] = useState("");
+  const [currentCommentID, setCurrentCommentID] = useState(null);
   const baseURL = "http://127.0.0.1:8000/exercises/";
   const navigate = useNavigate();
   const [likeDislike, setLikeDislike] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   let handleDeleteExercise = async (id) => {
-    console.log("Usuwam expense o id", id);
     let response = await api.delete(`exercises/${id}`);
     if (response.status === 204) {
       alert("You have succesfully deleted the expense!");
@@ -66,11 +69,33 @@ const ExerciseDetailsPage = () => {
         "Content-Type": "application/json",
       },
     });
+
     let data = await response.json();
     if (response.status === 200) {
       setExercise(data);
-      console.log(data);
+      setLoaded(true);
+      // console.log(data);
     }
+  };
+
+  const getAllComments = async () => {
+    let response = await fetch(baseURL + `${id}/comment`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    let data = await response.json();
+    if (response.status === 200) {
+      let new_data = addEditValueForEachComment(data.results);
+      setComments(new_data);
+    }
+  };
+
+  const addEditValueForEachComment = (data) => {
+    let result = data;
+    result.map((el) => (el["editView"] = false));
+    return result;
   };
 
   const handleCommentAddSubmit = (event) => {
@@ -80,27 +105,50 @@ const ExerciseDetailsPage = () => {
     addComment(body);
   };
 
+  const handleCommentUpdateSubmit = (event) => {
+    event.preventDefault();
+    updateComment();
+  };
+
+  const updateComment = async () => {
+    let response = await api.put(
+      `exercises/${id}/comment/${currentCommentID}/`,
+      {
+        exercise: id,
+        body: currentComment,
+      }
+    );
+    if (response.status == 200) {
+      getExerciseDetail();
+      getAllComments();
+    }
+  };
+
   const addComment = async (body) => {
-    console.log("body", body);
     let response = await api.post(`exercises/${id}/comment/`, {
       exercise: id,
       body: body,
     });
-    if (response.status == 201) getExerciseDetail();
+    if (response.status == 201) {
+      getExerciseDetail();
+      getAllComments();
+    }
   };
 
   const handleLikeDislikeButton = async () => {
     let response = await api.get(`exercises/like/${id}`);
     if (response.status === 200) {
-      alert("You liked/disliked thi exercise");
       setLikeDislike(!likeDislike);
       getExerciseDetail();
     }
   };
   const checkIfExerciseLikedByUser = () => {
     let result = false;
-    for (let like in exercise.likes) {
-      if (like[0] == user.first_name && like[1] == user.last_name) {
+    for (let i = 0; i < exercise.likes?.length; i++) {
+      if (
+        exercise.likes[i][0] == user.first_name &&
+        exercise.likes[i][1] == user.last_name
+      ) {
         result = true;
         break;
       }
@@ -108,10 +156,38 @@ const ExerciseDetailsPage = () => {
     setLikeDislike(result);
   };
 
+  const handleDeleteComment = async (comment_id) => {
+    let response = await api.delete(`exercises/${id}/comment/${comment_id}/`);
+    if (response.status === 204) {
+      alert("You succesfully deleted the comment!");
+      getAllComments();
+    }
+  };
+
+  const changeEditViewOnItem = (id) => {
+    let result = structuredClone(comments);
+    result.map((el) => {
+      if (el.id === id) {
+        if (!el.editView) setCurrentComment(el.body);
+        el.editView = !el.editView;
+      } else el.editView = false;
+    });
+    setCurrentCommentID(id);
+    setComments(result);
+  };
+
+  const changeDate = (date) => {
+    let date_splitted = date.slice(0, 19).split("T");
+    return `${date_splitted[0]} ${date_splitted[1]}`;
+  };
+
   useEffect(() => {
     getExerciseDetail();
-    checkIfExerciseLikedByUser();
-  }, []);
+    if (loaded) {
+      checkIfExerciseLikedByUser();
+    }
+    getAllComments();
+  }, [loaded]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -119,7 +195,7 @@ const ExerciseDetailsPage = () => {
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
-            marginTop: 3,
+            marginTop: 1,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -146,30 +222,104 @@ const ExerciseDetailsPage = () => {
               aria-label="comments"
               onClick={() => handleLikeDislikeButton(exercise.id)}
             >
+              {exercise.likes?.length}
               {likeDislike ? <ThumbDownAltIcon /> : <ThumbUpAltIcon />}
             </IconButton>
           )}
           <List>
-            {/* <ListItem
-              key={hit.objectID}
-              secondaryAction={}
-              disablePadding
-            >
-              <ListItemButton
-                component={Link}
-                to={`/exercise/details/${hit.objectID}`}
-              >
-                <ListItemText
-                  primary={`${hit.title} | ID: ${hit.objectID}`}
-                  secondary={hit.get_owner_first_name_last_name}
-                />
-                <p>{hit.get_categories}</p>
-                <p>{hit.get_likes}</p>
-              </ListItemButton>
-            </ListItem> */}
+            {comments &&
+              comments.map((comment) =>
+                comment.owner === user.first_name + " " + user.last_name ? (
+                  <div>
+                    <ListItemButton
+                      onClick={() => changeEditViewOnItem(comment.id)}
+                    >
+                      <ListItem
+                        key={comment.id}
+                        secondaryAction={
+                          comment.owner ===
+                            user.first_name + " " + user.last_name && (
+                            <IconButton
+                              edge="end"
+                              aria-label="comments"
+                              onClick={() => handleDeleteComment(comment.id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )
+                        }
+                      >
+                        <ListItemText
+                          primary={`${comment.owner} | ${changeDate(
+                            comment.updated_at
+                          )}`}
+                          secondary={comment.body}
+                        ></ListItemText>
+                      </ListItem>
+                    </ListItemButton>
+                    {comment.editView && (
+                      <Box
+                        component="form"
+                        noValidate
+                        onSubmit={handleCommentUpdateSubmit}
+                        sx={{ mt: 3 }}
+                      >
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} sm={12}>
+                            <TextField
+                              value={currentComment}
+                              onChange={(e) => {
+                                setCurrentCommentID(comment.id);
+                                setCurrentComment(e.target.value);
+                              }}
+                              required
+                              fullWidth
+                              id="body"
+                              label="Content"
+                              name="body"
+                              autoComplete="body"
+                            />
+                          </Grid>
+                        </Grid>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          sx={{ mt: 3, mb: 2 }}
+                        >
+                          Update Comment
+                        </Button>
+                      </Box>
+                    )}
+                  </div>
+                ) : (
+                  <ListItem
+                    key={comment.id}
+                    secondaryAction={
+                      comment.owner ===
+                        user.first_name + " " + user.last_name && (
+                        <IconButton
+                          edge="end"
+                          aria-label="comments"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )
+                    }
+                  >
+                    <ListItemText
+                      primary={`${comment.owner} | ${changeDate(
+                        comment.updated_at
+                      )}`}
+                      secondary={comment.body}
+                    ></ListItemText>
+                  </ListItem>
+                )
+              )}
           </List>
 
-          {user.is_coach && (
+          {user && (
             <Box
               sx={{
                 marginTop: 8,

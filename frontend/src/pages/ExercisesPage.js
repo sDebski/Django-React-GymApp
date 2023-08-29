@@ -43,7 +43,7 @@ const ExercisesPage = () => {
     hitComponent: ExerciseHitComponent,
   };
   let baseURL = "http://127.0.0.1:8000/";
-  const [currentCategory, setCurrentCategory] = useState(0);
+  const [currentCategory, setCurrentCategory] = useState("");
   const changeCategory = (newCategory) => {
     setCurrentCategory(newCategory);
   };
@@ -60,8 +60,8 @@ const ExercisesPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.results);
         setCategories(data.results);
+        setCurrentCategory(data.results[0].id.toString());
       })
       .then(() => setLoaded(true));
   };
@@ -69,7 +69,7 @@ const ExercisesPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     let listOfCategories = [];
-    listOfCategories.push(currentCategory + 1);
+    listOfCategories.push(currentCategory);
     const data = new FormData(event.currentTarget);
     const submitData = {
       categories: listOfCategories,
@@ -81,7 +81,6 @@ const ExercisesPage = () => {
   };
 
   const addExercise = async (data) => {
-    console.log(data);
     let response = await api.post("exercises/", {
       categories: data["categories"],
       title: data["title"],
@@ -94,27 +93,10 @@ const ExercisesPage = () => {
     }
   };
 
-  let handleDeleteExpense = async (id) => {
-    console.log("Usuwam exercise o id", id);
-    // let response = await api.delete(`expenses/${id}`);
-    // if (response.status === 204) {
-    //   getAllExpenses();
-    //   getCategoryExpenses();
-    //   alert("You have succesfully deleted the expense!");
-    // }
-  };
-
   useEffect(() => {
-    console.log(user);
     if (user.is_coach) {
       getCategories();
     }
-    if (loaded) {
-      getCategories();
-      console.log("categories", categories);
-    }
-    // getCategoryExpenses();
-    // getAllExpenses();
   }, [loaded, user]);
 
   return (
