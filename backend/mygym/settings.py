@@ -11,6 +11,7 @@ DEBUG = config("DEBUG")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
+GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID")
 
 INSTALLED_APPS = [
     "django.contrib.admin",

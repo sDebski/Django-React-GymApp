@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics, status, response
+from rest_framework import generics, status, response, permissions
 from .serializers import (
     GoogleSocialAuthSerializer,
     FacebookSocialAuthSerializer,
@@ -8,6 +8,7 @@ from .serializers import (
 
 class GoogleSocialAuthView(generics.GenericAPIView):
     serializer_class = GoogleSocialAuthSerializer
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -18,6 +19,7 @@ class GoogleSocialAuthView(generics.GenericAPIView):
 
 class FacebookSocialAuthView(generics.GenericAPIView):
     serializer_class = FacebookSocialAuthSerializer
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)

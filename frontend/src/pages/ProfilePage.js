@@ -107,15 +107,12 @@ const ProfilePage = () => {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <PersonIcon />
-          </Avatar>
           <Avatar
             sx={{ width: 250, height: 250, bgcolor: "secondary.main" }}
             alt="Remy Sharp"
             src={avatar}
           />
-          <Typography component="h1" variant="h5">
+          <Typography variant="h5">
             {user && user.first_name} Profile
           </Typography>
           <Box

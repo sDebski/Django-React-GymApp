@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate
 from users.models import User
-import os
 from rest_framework.exceptions import AuthenticationFailed
 from decouple import config
 
@@ -8,17 +7,21 @@ from decouple import config
 def register_social_user(provider, user_id, email, name):
     filtered_user_by_email = User.objects.filter(email=email)
     print(config("SOCIAL_SECRET"), "SOCIAL_SECRET decouple")
-    print(os.environ.get("SOCIAL_SECRET"), "SOCIAL_SECRET os")
 
     if filtered_user_by_email.exists():
+        print("znalazlem usera po mailu, autentykuje")
         if provider == filtered_user_by_email[0].auth_provider:
             registered_user = authenticate(
-                email=email, password=os.environ.get("SOCIAL_SECRET")
+                email=email, password=config("SOCIAL_SECRET")
             )
 
             return {
-                "username": registered_user.name,
-                "email": registered_user.email,
+                "user": {
+                    "email": registered_user.email,
+                    "first_name": registered_user.first_name,
+                    "date_of_birth": "",
+                    "is_coach": "false",
+                },
                 "tokens": registered_user.tokens(),
             }
 
@@ -29,19 +32,24 @@ def register_social_user(provider, user_id, email, name):
             )
 
     else:
+        print("Nie znalazlem usera po mailu, tworze usera i autentykuje")
         user = {
             "first_name": name,
             "email": email,
-            "password": os.environ.get("SOCIAL_SECRET"),
+            "password": config("SOCIAL_SECRET"),
         }
         user = User.objects.create_user(**user)
         user.is_active = True
         user.auth_provider = provider
         user.save()
 
-        new_user = authenticate(email=email, password=os.environ.get("SOCIAL_SECRET"))
+        new_user = authenticate(email=email, password=config("SOCIAL_SECRET"))
         return {
-            "email": new_user.email,
-            "first_name": new_user.first_name,
+            "user": {
+                "email": new_user.email,
+                "first_name": new_user.first_name,
+                "date_of_birth": "",
+                "is_coach": "false",
+            },
             "tokens": new_user.tokens(),
         }

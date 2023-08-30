@@ -14,11 +14,13 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "react-facebook-login";
 
 const defaultTheme = createTheme();
 
 export default function LoginPage() {
-  let { loginUser } = useContext(AuthContext);
+  let { loginUser, loginWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
 
   let handleForgottenPassword = () => {
@@ -36,6 +38,14 @@ export default function LoginPage() {
       return;
     }
     loginUser(event);
+  };
+
+  const responseFacebook = (response) => {
+    console.log(response);
+  };
+
+  const componentClicked = () => {
+    console.log("Clicked!");
   };
 
   return (
@@ -90,13 +100,41 @@ export default function LoginPage() {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Button onClick={handleForgottenPassword} variant="body2">
-                  Forgot password?
-                </Button>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  <Button onClick={handleForgottenPassword} variant="body2">
+                    Forgot password?
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                      loginWithGoogle(credentialResponse);
+                    }}
+                    onError={() => {
+                      alert("Something went wrong!");
+                      console.log("Login Failed");
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <FacebookLogin
+                    appId="314046614496841"
+                    autoLoad={true}
+                    fields="name,email,picture"
+                    onClick={componentClicked}
+                    callback={responseFacebook}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
         </Box>
       </Container>

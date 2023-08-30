@@ -132,6 +132,7 @@ const ExerciseDetailsPage = () => {
     if (response.status == 201) {
       getExerciseDetail();
       getAllComments();
+      document.getElementById("comment_add_form").reset();
     }
   };
 
@@ -259,6 +260,7 @@ const ExerciseDetailsPage = () => {
                     </ListItemButton>
                     {comment.editView && (
                       <Box
+                        id="comment_form"
                         component="form"
                         noValidate
                         onSubmit={handleCommentUpdateSubmit}
@@ -343,6 +345,7 @@ const ExerciseDetailsPage = () => {
 
               <Box
                 component="form"
+                id="comment_add_form"
                 noValidate
                 onSubmit={handleCommentAddSubmit}
                 sx={{ mt: 3 }}

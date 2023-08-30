@@ -88,6 +88,7 @@ const ExercisesPage = () => {
     });
     if (response.status === 201) {
       alert("Exercise has been successfully added!");
+      document.getElementById("add_exercise_form").reset();
     } else {
       alert("Something went wrong!");
     }
@@ -130,6 +131,7 @@ const ExercisesPage = () => {
 
             <Box
               component="form"
+              id="add_exercise_form"
               noValidate
               onSubmit={handleSubmit}
               sx={{ mt: 3 }}

@@ -46,6 +46,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async (credentialResponse) => {
+    console.log(credentialResponse);
+    console.log(credentialResponse.credential);
+    let response = await fetch("http://127.0.0.1:8000/social_auth/google/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        auth_token: credentialResponse.credential,
+      }),
+    });
+    let data = await response.json();
+    if (response.status === 200) {
+      setTokens(data.tokens);
+      setUser(data.user);
+      localStorage.setItem("tokens", JSON.stringify(data.tokens));
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/");
+    } else {
+      alert("Something went wrong!");
+    }
+  };
+
   let registerUser = async (data) => {
     let response = await fetch(baseURL + "register/", {
       method: "POST",
@@ -87,6 +111,7 @@ export const AuthProvider = ({ children }) => {
     setTokens: setTokens,
     setUser: setUser,
     registerUser: registerUser,
+    loginWithGoogle: loginWithGoogle,
   };
 
   useEffect(() => {

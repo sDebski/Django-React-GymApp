@@ -29,6 +29,7 @@ class UserAdmin(BaseUserAdmin):
         "last_name",
         "created_at",
         "updated_at",
+        "auth_provider",
     )
     list_filter = ("is_active", "is_staff", "is_admin", "is_coach")
     fieldsets = (
@@ -38,7 +39,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         (
             "Personal info",
-            {"fields": ("date_of_birth", "first_name", "last_name")},
+            {"fields": ("date_of_birth", "first_name", "last_name", "auth_provider")},
         ),
         (
             "Permissions",
@@ -61,6 +62,7 @@ class UserAdmin(BaseUserAdmin):
                     "is_staff",
                     "is_active",
                     "is_coach",
+                    "auth_provider",
                 ),
             },
         ),

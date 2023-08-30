@@ -19,44 +19,47 @@ import DashboardPage from "./pages/DashboardPage";
 import ExercisesPage from "./pages/ExercisesPage";
 import ChatPage from "./pages/ChatPage";
 import ExerciseDetailsPage from "./pages/ExerciseDetailsPage";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <AuthProvider>
-          <Navbar />
-          <Routes>
-            <Route exact path="/" element={<PrivateRoute />}>
-              <Route exact path="/" element={<HomePage />} />
-            </Route>
-            <Route Component={LoginPage} path="login/" />
-            <Route Component={RegisterPage} path="register/" />
-            <Route
-              Component={EmailVerificationPage}
-              path="email-verification/"
-            />
-            <Route Component={ResetPasswordPage} path="reset-password/" />
-            <Route
-              Component={ResetPasswordCompletePage}
-              path="reset-password-complete/"
-            />
-            <Route
-              Component={ResetPasswordNewPasswordPage}
-              path="reset-password-new-password/"
-            />
-            <Route Component={ExpensesPage} path="expenses/" />
-            <Route Component={ProfilePage} path="profile/" />
-            <Route Component={AccountPage} path="account/" />
-            <Route Component={DashboardPage} path="dashboard/" />
-            <Route Component={ExercisesPage} path="exercises/" />
-            <Route Component={ChatPage} path="chat/" />
-            <Route
-              Component={ExerciseDetailsPage}
-              path="exercise/details/:id"
-            />
-          </Routes>
-        </AuthProvider>
+        <GoogleOAuthProvider clientId="538718943719-ismmor4emirsq68ofhqcb80413ngh9f6.apps.googleusercontent.com">
+          <AuthProvider>
+            <Navbar />
+            <Routes>
+              <Route exact path="/" element={<PrivateRoute />}>
+                <Route exact path="/" element={<HomePage />} />
+              </Route>
+              <Route Component={LoginPage} path="login/" />
+              <Route Component={RegisterPage} path="register/" />
+              <Route
+                Component={EmailVerificationPage}
+                path="email-verification/"
+              />
+              <Route Component={ResetPasswordPage} path="reset-password/" />
+              <Route
+                Component={ResetPasswordCompletePage}
+                path="reset-password-complete/"
+              />
+              <Route
+                Component={ResetPasswordNewPasswordPage}
+                path="reset-password-new-password/"
+              />
+              <Route Component={ExpensesPage} path="expenses/" />
+              <Route Component={ProfilePage} path="profile/" />
+              <Route Component={AccountPage} path="account/" />
+              <Route Component={DashboardPage} path="dashboard/" />
+              <Route Component={ExercisesPage} path="exercises/" />
+              <Route Component={ChatPage} path="chat/" />
+              <Route
+                Component={ExerciseDetailsPage}
+                path="exercise/details/:id"
+              />
+            </Routes>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </Router>
     </div>
   );
