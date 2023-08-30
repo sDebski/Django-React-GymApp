@@ -40,6 +40,9 @@ const ExpensesPage = () => {
   let [allExpenses, setAllExpenses] = useState([]);
   let [next, setNext] = useState(null);
   let [previous, setPrevious] = useState(null);
+  const [currentExpenseDescription, setCurrentExpenseDescription] =
+    useState("");
+  const [currentExpenseID, setCurrentExpenseID] = useState(null);
   const [currentCategory, setCurrentCategory] = useState("GYM_MEMBERSHIP");
   const changeCategory = (newCategory) => {
     setCurrentCategory(newCategory);
@@ -81,11 +84,18 @@ const ExpensesPage = () => {
       let data = response.data;
       console.log("getAllExpenses", data);
       if (data.results.length > 0) {
-        setAllExpenses(data.results);
+        console.log(data.results);
+        setAllExpenses(addEditValueForEachExpense(data.results));
         setNext(data.next);
         setPrevious(data.previous);
       }
     }
+  };
+
+  const addEditValueForEachExpense = (data) => {
+    let result = data;
+    result.map((el) => (el["editView"] = false));
+    return result;
   };
 
   const addExpense = async (data) => {
@@ -118,6 +128,34 @@ const ExpensesPage = () => {
     console.log(page);
     let page_data = page.split("?")[1];
     getAllExpenses("?" + page_data);
+  };
+
+  const changeEditViewOnItem = (id) => {
+    let result = structuredClone(allExpenses);
+    result.map((el) => {
+      if (el.id === id) {
+        if (!el.editView) setCurrentExpenseDescription(el.description);
+        el.editView = !el.editView;
+      } else el.editView = false;
+    });
+    setCurrentExpenseID(id);
+    setAllExpenses(result);
+  };
+
+  const handleExpenseUpdateSubmit = (event) => {
+    event.preventDefault();
+    updateExpense();
+  };
+
+  const updateExpense = async () => {
+    console.log(currentExpenseDescription, currentExpenseID);
+    let response = await api.patch(`expenses/${currentExpenseID}/`, {
+      description: currentExpenseDescription,
+    });
+    if (response.status == 200) {
+      getCategoryExpenses();
+      getAllExpenses();
+    }
   };
 
   useEffect(() => {
@@ -186,7 +224,7 @@ const ExpensesPage = () => {
                   secondaryAction={
                     <IconButton
                       edge="end"
-                      aria-label="comments"
+                      aria-label="expenses"
                       onClick={() => handleDeleteExpense(expense.id)}
                     >
                       <DeleteIcon />
@@ -195,15 +233,50 @@ const ExpensesPage = () => {
                   disablePadding
                 >
                   <ListItemButton
-                    onClick={() => alert(`Description: ${expense.description}`)}
+                    onClick={() => changeEditViewOnItem(expense.id)}
                   >
                     <ListItemText
                       primary={`${expense.category} | ${expense.amount}$`}
-                      secondary={expense.date}
+                      secondary={`${expense.date} | ${expense.description}`}
                     />
                   </ListItemButton>
                 </ListItem>
               </List>
+              {expense.editView && (
+                <Box
+                  id="expense_form"
+                  component="form"
+                  noValidate
+                  onSubmit={handleExpenseUpdateSubmit}
+                  sx={{ mt: 3 }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12}>
+                      <TextField
+                        value={currentExpenseDescription}
+                        onChange={(e) => {
+                          setCurrentExpenseID(expense.id);
+                          setCurrentExpenseDescription(e.target.value);
+                        }}
+                        required
+                        fullWidth
+                        id="description"
+                        label="Description"
+                        name="description"
+                        autoComplete="description"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Update Expense
+                  </Button>
+                </Box>
+              )}
             </nav>
           ))}
           <Box
@@ -219,7 +292,7 @@ const ExpensesPage = () => {
                 {previous && (
                   <IconButton
                     edge="end"
-                    aria-label="comments"
+                    aria-label="expenses"
                     onClick={() => handlePageChange(previous)}
                   >
                     <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -232,7 +305,7 @@ const ExpensesPage = () => {
                 {next && (
                   <IconButton
                     edge="end"
-                    aria-label="comments"
+                    aria-label="expenses"
                     onClick={() => handlePageChange(next)}
                   >
                     <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
