@@ -115,10 +115,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("przeladowuje");
-    console.log("user", user);
-    console.log("tokens", tokens);
-    setLoading(false);
+    console.log(loading);
+    console.log("UseEffect auth COntext");
+    setUser(() =>
+      localStorage.getItem("user") ? localStorage.getItem("user") : null
+    );
+    console.log(user);
+    setTokens(() =>
+      localStorage.getItem("tokens")
+        ? JSON.parse(localStorage.getItem("tokens"))
+        : null
+    );
+    console.log(tokens);
+    setLoading(() => false);
   }, [loading]);
 
   return (

@@ -21,12 +21,18 @@ class ExpenseSummaryStats(APIView):
 
         return str(amount)
 
-    def get(self, request):
+    def get(self, request, timeperiod):
+        if timeperiod == "year":
+            to_substract = datetime.timedelta(30 * 12)
+        elif timeperiod == "day":
+            to_substract = datetime.timedelta(1)
+        else:
+            to_substract = datetime.date.today()
         todays_date = datetime.date.today()
-        a_year_ago = todays_date - datetime.timedelta(30 * 12)
+        date_ago = todays_date - to_substract
         expenses = Expense.objects.filter(
             owner=request.user,
-            date__gte=a_year_ago,
+            date__gte=date_ago,
             date__lte=todays_date,
         )
 
@@ -40,6 +46,5 @@ class ExpenseSummaryStats(APIView):
                     "amount": self.get_amount_for_category(expenses, category),
                 }
             )
-            # final[category] = self.get_amount_for_category(expenses, category)
 
         return response.Response({"category_data": final}, status=status.HTTP_200_OK)

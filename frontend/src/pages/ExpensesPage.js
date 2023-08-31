@@ -42,11 +42,23 @@ const ExpensesPage = () => {
   let [previous, setPrevious] = useState(null);
   const [currentExpenseDescription, setCurrentExpenseDescription] =
     useState("");
+
+  const [currentTimePeriod, setCurrentTimePeriod] = useState("");
   const [currentExpenseID, setCurrentExpenseID] = useState(null);
   const [currentCategory, setCurrentCategory] = useState("GYM_MEMBERSHIP");
   const changeCategory = (newCategory) => {
     setCurrentCategory(newCategory);
   };
+
+  const changeTimePeriod = (newTimePeriod) => {
+    setCurrentTimePeriod(newTimePeriod);
+  };
+
+  const handleCategoryExpenseSearch = (event) => {
+    event.preventDefault();
+    getCategoryExpenses();
+  };
+
   let api = useAxios();
 
   const handleSubmit = (event) => {
@@ -67,24 +79,24 @@ const ExpensesPage = () => {
   };
 
   let getCategoryExpenses = async () => {
-    console.log("Biore categories");
-    let response = await api.get("userstats/expense-category");
-    if (response.status === 200) {
-      let data = response.data.data;
-      if (data.category_data.length > 0) {
-        console.log("getCategoryExpenses", data.category_data);
-        setCategoryExpenses(data.category_data);
+    if (currentTimePeriod !== "") {
+      let response = await api.get(
+        `userstats/expense-category/${currentTimePeriod}/`
+      );
+      if (response.status === 200) {
+        let data = response.data.data;
+        if (data.category_data.length > 0) {
+          setCategoryExpenses(data.category_data);
+        }
       }
-    }
+    } else setCategoryExpenses([]);
   };
 
   let getAllExpenses = async (page = "") => {
     let response = await api.get("expenses/" + page);
     if (response.status === 200) {
       let data = response.data;
-      console.log("getAllExpenses", data);
       if (data.results.length > 0) {
-        console.log(data.results);
         setAllExpenses(addEditValueForEachExpense(data.results));
         setNext(data.next);
         setPrevious(data.previous);
@@ -99,7 +111,6 @@ const ExpensesPage = () => {
   };
 
   const addExpense = async (data) => {
-    console.log(data);
     let response = await api.post("expenses/", {
       category: data["category"],
       amount: data["amount"],
@@ -110,13 +121,13 @@ const ExpensesPage = () => {
       alert("Expense has been successfully added!");
       getCategoryExpenses();
       getAllExpenses();
+      document.getElementById("add_expense_form").reset();
     } else {
       alert("Something went wrong!");
     }
   };
 
   let handleDeleteExpense = async (id) => {
-    console.log("Usuwam expense o id", id);
     let response = await api.delete(`expenses/${id}`);
     if (response.status === 204) {
       getAllExpenses();
@@ -125,7 +136,6 @@ const ExpensesPage = () => {
     }
   };
   const handlePageChange = async (page) => {
-    console.log(page);
     let page_data = page.split("?")[1];
     getAllExpenses("?" + page_data);
   };
@@ -148,7 +158,6 @@ const ExpensesPage = () => {
   };
 
   const updateExpense = async () => {
-    console.log(currentExpenseDescription, currentExpenseID);
     let response = await api.patch(`expenses/${currentExpenseID}/`, {
       description: currentExpenseDescription,
     });
@@ -184,6 +193,32 @@ const ExpensesPage = () => {
               <Typography variant="h5">Category Expenses</Typography>
             </Grid>
           </Grid>
+          <Box
+            component="form"
+            id="add_expense_form"
+            noValidate
+            onSubmit={handleCategoryExpenseSearch}
+            sx={{ mt: 3 }}
+          >
+            <select
+              required
+              onChange={(event) => changeTimePeriod(event.target.value)}
+              value={currentTimePeriod}
+            >
+              <option value="">----</option>
+              <option value="day">1 DAY</option>
+              <option value="year">1 YEAR</option>
+            </select>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Search
+            </Button>
+          </Box>
+
           {categoryExpenses.map((expense) => (
             <nav aria-label="secondary mailbox folders">
               <List>
@@ -342,6 +377,7 @@ const ExpensesPage = () => {
 
           <Box
             component="form"
+            id="add_expense_form"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}

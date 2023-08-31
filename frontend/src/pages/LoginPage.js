@@ -124,7 +124,7 @@ export default function LoginPage() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12}>
+                {/* <Grid item xs={12} sm={12}>
                   <FacebookLogin
                     appId="314046614496841"
                     autoLoad={true}
@@ -132,7 +132,7 @@ export default function LoginPage() {
                     onClick={componentClicked}
                     callback={responseFacebook}
                   />
-                </Grid>
+                </Grid> */}
               </Grid>
             </Box>
           </Box>
