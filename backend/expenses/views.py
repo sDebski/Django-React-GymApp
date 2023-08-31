@@ -12,7 +12,6 @@ class ExpensesListView(ListCreateAPIView):
     queryset = Expense.objects.all()
 
     def perform_create(self, serializer):
-        print(serializer.validated_data)
         return serializer.save(owner=self.request.user)
 
     def get_queryset(self):

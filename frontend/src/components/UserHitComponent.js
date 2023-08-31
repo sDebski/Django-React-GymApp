@@ -13,11 +13,14 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchComponent from "../components/SearchComponent";
 import ExerciseHitComponent from "../components/ExerciseHitComponent";
 import ChatIcon from "@mui/icons-material/Chat";
+import { useNavigate } from "react-router-dom";
 
 function UserHitComponent({ hit }) {
-  const handleChat = (id) => {
-    console.log(id);
+  const navigate = useNavigate();
+  const handleChat = () => {
+    navigate(`room/${hit.objectID}/${hit.first_name}/${hit.last_name}/`);
   };
+
   return (
     <ListItem
       key={hit.objectID}
@@ -25,7 +28,7 @@ function UserHitComponent({ hit }) {
         <IconButton
           edge="end"
           aria-label="comments"
-          onClick={() => handleChat(hit.objectID)}
+          onClick={() => handleChat()}
         >
           <ChatIcon />
         </IconButton>

@@ -20,6 +20,7 @@ import ExercisesPage from "./pages/ExercisesPage";
 import ChatPage from "./pages/ChatPage";
 import ExerciseDetailsPage from "./pages/ExerciseDetailsPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import ChatRoomPage from "./pages/ChatRoomPage";
 
 function App() {
   return (
@@ -56,6 +57,10 @@ function App() {
               <Route
                 Component={ExerciseDetailsPage}
                 path="exercise/details/:id"
+              />
+              <Route
+                Component={ChatRoomPage}
+                path="chat/room/:id/:first_name/:last_name/"
               />
             </Routes>
           </AuthProvider>
