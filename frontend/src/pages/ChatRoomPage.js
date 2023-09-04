@@ -54,36 +54,40 @@ const ChatRoomPage = () => {
   const navigate = useNavigate();
   const [likeDislike, setLikeDislike] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [chat, setChat] = useState(`${id}-${first_name}-${last_name}`);
 
-  const [username, setUsername] = useState("username");
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [receivedMessage, setReceivedMessage] = useState("");
   let allMessages = [];
 
   useEffect(() => {
-    Pusher.logToConsole = true;
+    Pusher.logToConsole = false;
 
-    const pusher = new Pusher("", {
-      cluster: "",
+    const pusher = new Pusher("af6db88506191819a56e", {
+      cluster: "eu",
     });
-
-    const channel = pusher.subscribe("chat");
+    const channel = pusher.subscribe(`${id}-${first_name}-${last_name}`);
     channel.bind("message", function (data) {
-      allMessages.push(data);
-      setMessages(allMessages);
+      console.log("Dostaje wiadomosc!");
+      setReceivedMessage(() => data);
     });
   }, []);
 
+  useEffect(() => {
+    if (receivedMessage) setMessages([...messages, receivedMessage]);
+  }, [receivedMessage]);
+
   const submit = async (e) => {
     e.preventDefault();
-
-    api
+    await api
       .post("chat/messages/", {
+        chat: chat,
         body: message,
       })
       .then((response) => {
-        if (response.status == 200) {
-          alert("Message added");
+        if (response.status == 201) {
+          console.log("Message added");
         }
       })
       .catch((e) => {
@@ -244,19 +248,14 @@ const ChatRoomPage = () => {
         className="d-flex flex-column align-items-stretch flex-shrink-0 bg-white"
         style={{ minHeight: "500px" }}
       >
-        <div className="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-          <input
-            className="fs-5 fw-semibold"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
+        <div className="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom"></div>
         <div className="list-group list-group-flush border-bottom scrollarea">
           {messages.map((message) => {
             return (
               <div className="list-group-item list-group-item-action py-3 lh-tight">
                 <div className="d-flex w-100 align-items-center justify-content-between">
                   <strong className="mb-1">{message.username}</strong>
+                  <p>{message.created_at}</p>
                 </div>
                 <div className="col-10 mb-1 small">{message.message}</div>
               </div>

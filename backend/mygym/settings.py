@@ -13,6 +13,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID")
 
+PUSHER_SECRET = config("PUSHER_SECRET")
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
