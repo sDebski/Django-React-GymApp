@@ -1,5 +1,6 @@
 from .test_setup import TestSetUp
-from ..models import User
+from users.models import User
+from ..models import Expense
 
 
 class TestViews(TestSetUp):
@@ -13,76 +14,64 @@ class TestViews(TestSetUp):
             email=self.user_data["email"], password=self.user_data["password"]
         )
 
-    def _create_account(self):
+    def _create_expenses(self):
         self.client.post(self.register_url, self.user_data, format="json")
         user = User.objects.get(email=self.user_data["email"])
-        user.is_active = True
-        user.save()
 
-    def test_user_cannot_register_with_no_data(self):
-        res = self.client.post(self.register_url)
-        self.assertEqual(res.status_code, 400)
+        Expense.objects.create(
+            description=self.user_data["description"],
+            owner=user,
+            date=self.user_data["date"],
+            amount=self.user_data["amount"],
+            category=self.user_data["category"],
+        )
 
-    def test_user_can_register_correctly(self):
-        res = self.client.post(self.register_url, self.user_data, format="json")
+        Expense.objects.create(
+            description=self.user_data["description"] + "2",
+            owner=user,
+            date=self.user_data["date"],
+            amount=self.user_data["amount"],
+            category=self.user_data["category"],
+        )
+
+    def test_user_can_not_create_expense_when_not_logged_in(self):
+        res = self.client.post(
+            self.expense_url,
+            {
+                "description": self.user_data["description"],
+                "date": self.user_data["date"],
+                "amount": self.user_data["amount"],
+                "category": self.user_data["category"],
+            },
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_user_can_create_expense_when_logged_in(self):
+        self._create_user_and_login()
+        res = self.client.post(
+            self.expenses_url,
+            {
+                "description": self.user_data["description"],
+                "date": self.user_data["date"],
+                "amount": self.user_data["amount"],
+                "category": self.user_data["category"],
+            },
+        )
+
         self.assertEqual(res.status_code, 201)
 
-    def test_user_cannot_login_with_unverified_email(self):
-        self.client.post(self.register_url, self.user_data, format="json")
-        res = self.client.post(self.login_url, self.user_data, format="json")
-        self.assertEqual(res.status_code, 401)
+    def test_user_can_see_created_expenses_when_logged_in(self):
+        self._create_user_and_login()
+        self._create_expenses()
 
-    def test_user_can_login_after_email_verification(self):
-        self.client.post(self.register_url, self.user_data, format="json")
-        user = User.objects.get(email=self.user_data["email"])
-        user.is_active = True
-        user.save()
+        res = self.client.get(self.expenses_url)
 
-        res = self.client.post(self.login_url, self.user_data, format="json")
+        expenses = res.data["results"]
         self.assertEqual(res.status_code, 200)
-
-    def test_logged_user_can_get_his_profile_info(self):
-        self._create_user_and_login()
-
-        res = self.client.get(self.profile_url)
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["bio"], "")
-
-    def test_non_logged_user_can_not_get_his_profile_info(self):
-        self._create_account()
-        res = self.client.get(self.profile_url)
-        self.assertEqual(res.status_code, 401)
-
-    def test_non_logged_user_can_not_get_his_account_info(self):
-        self._create_user_and_login()
-        res = self.client.get(self.account_url)
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data["first_name"], self.user_data["first_name"])
-        self.assertEqual(res.data["email"], self.user_data["email"])
-
-    def test_logout_user(self):
-        self._create_user_and_login()
-        res = self.client.post(self.logout_url, self.user_data)
-        self.assertEqual(res.status_code, 204)
-
-    def test_logout_not_logged_user(self):
-        res = self.client.post(self.logout_url)
-        self.assertEqual(res.status_code, 401)
-
-    def test_user_password_change_and_login(self):
-        self._create_user_and_login()
-        password_change_res = self.client.post(self.password_change_url, self.user_data)
-        self.assertEqual(password_change_res.status_code, 204)
-
-        fail_login_res = self.client.post(self.login_url, self.user_data, format="json")
-        self.assertEqual(fail_login_res.status_code, 401)
-
-        success_login_res = self.client.post(
-            self.login_url,
-            {
-                "email": self.user_data["email"],
-                "password": self.user_data["new_password"],
-            },
-            format="json",
+        self.assertEqual(len(expenses), 2)
+        self.assertEqual(expenses[0]["description"], self.user_data["description"])
+        self.assertEqual(
+            expenses[1]["description"],
+            self.user_data["description"] + "2",
         )
-        self.assertEqual(success_login_res.status_code, 200)

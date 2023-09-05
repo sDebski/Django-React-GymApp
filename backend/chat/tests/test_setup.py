@@ -7,10 +7,7 @@ class TestSetUp(APITestCase):
     def setUp(self):
         self.register_url = reverse("users:register")
         self.login_url = reverse("users:login")
-        self.profile_url = reverse("users:user-profile")
-        self.account_url = reverse("users:user-info")
-        self.logout_url = reverse("users:logout")
-        self.password_change_url = reverse("users:change-password")
+        self.messages_url = reverse("chat:messages")
         self.faker = Faker()
         self.password = "qwe123"
         self.new_password = "qwe123123"

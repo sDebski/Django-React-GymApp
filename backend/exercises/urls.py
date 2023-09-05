@@ -5,9 +5,9 @@ from .views import *
 app_name = "exercises"
 
 router = DefaultRouter()
-router.register(r"categories", CategoryViewSet)
-router.register(r"^(?P<exercise_id>\d+)/comment", CommentViewSet)
-router.register(r"", ExerciseViewSet)
+router.register(r"categories", CategoryViewSet, basename="categories")
+router.register(r"^(?P<exercise_id>\d+)/comment", CommentViewSet, basename="comments")
+router.register(r"", ExerciseViewSet, basename="exercises")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -15,7 +15,7 @@ class ExpensesListView(ListCreateAPIView):
         return serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        return self.queryset.filter(owner=self.request.user)
+        return self.queryset.filter(owner=self.request.user).order_by("-updated_at")
 
 
 class ExpenseDetailView(RetrieveUpdateDestroyAPIView):
@@ -26,4 +26,4 @@ class ExpenseDetailView(RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
     def get_queryset(self):
-        return self.queryset.filter(owner=self.request.user)
+        return self.queryset.filter(owner=self.request.user).order_by("-updated_at")

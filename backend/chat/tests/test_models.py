@@ -1,18 +1,16 @@
 from django.test import TestCase
 from users.models import User
 from django.utils import timezone
+from ..models import Message
 
 
 # models test
-class UserTest(TestCase):
+class MessageTest(TestCase):
     def setUp(self):
         self.user_data = {
             "normal_email": "normal_email@mail.com",
             "normal_first_name": "normal_first",
             "normal_last_name": "normal_last",
-            "super_email": "super_email@mail.com",
-            "super_first_name": "super_first",
-            "super_last_name": "super_last",
             "password": "qwe123",
         }
         User.objects.create_user(
@@ -21,22 +19,35 @@ class UserTest(TestCase):
             first_name=self.user_data["normal_first_name"],
             last_name=self.user_data["normal_last_name"],
         )
-        User.objects.create_superuser(
-            email=self.user_data["super_email"],
-            password=self.user_data["password"],
-            first_name=self.user_data["super_first_name"],
-            last_name=self.user_data["super_last_name"],
+
+    def test_message_creation(self):
+        user = User.objects.get(email=self.user_data["normal_email"])
+
+        message = Message.objects.create(
+            owner=user,
+            body="Body test",
         )
 
-    def test_normal_user_creation(self):
-        user = User.objects.get(email=self.user_data["normal_email"])
-        self.assertTrue(isinstance(user, User))
-        self.assertEqual(user.first_name, self.user_data["normal_first_name"])
+        self.assertTrue(isinstance(message, Message))
+        self.assertEqual(message.owner, user)
+        self.assertEqual(message.body, "Body test")
+        self.assertEqual(message.receiver, None)
 
-    def test_super_user_creation(self):
-        user = User.objects.get(email=self.user_data["super_email"])
-        self.assertTrue(isinstance(user, User))
-        self.assertEqual(user.first_name, self.user_data["super_first_name"])
-        self.assertEqual(user.is_active, True)
-        self.assertEqual(user.is_coach, True)
-        self.assertEqual(user.is_admin, True)
+    def test_message_creation_with_no_body(self):
+        user = User.objects.get(email=self.user_data["normal_email"])
+
+        message = Message.objects.create(
+            owner=user,
+        )
+
+        self.assertTrue(isinstance(message, Message))
+        self.assertEqual(message.body, "")
+
+    def test_message_creation_with_no_owner(self):
+        message = Message.objects.create(
+            body="body test",
+        )
+
+        self.assertTrue(isinstance(message, Message))
+        self.assertEqual(message.owner, None)
+        self.assertEqual(message.body, "body test")
