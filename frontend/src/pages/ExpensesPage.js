@@ -31,6 +31,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { blue, green, grey, pink, yellow } from "@mui/material/colors";
 
 const defaultTheme = createTheme();
 
@@ -324,30 +325,30 @@ const ExpensesPage = () => {
           >
             <Grid container spacing={2}>
               <Grid item xs={2} sm={6}>
-                {previous && (
-                  <IconButton
-                    edge="end"
-                    aria-label="expenses"
-                    onClick={() => handlePageChange(previous)}
+                <IconButton
+                  edge="end"
+                  aria-label="expenses"
+                  disabled={previous ? false : true}
+                  onClick={() => handlePageChange(previous)}
+                >
+                  <Avatar
+                    sx={{ m: 1, bgcolor: previous ? green[500] : grey[500] }}
                   >
-                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                      <ChevronLeftIcon />
-                    </Avatar>
-                  </IconButton>
-                )}
+                    <ChevronLeftIcon />
+                  </Avatar>
+                </IconButton>
               </Grid>
               <Grid item xs={2} sm={6}>
-                {next && (
-                  <IconButton
-                    edge="end"
-                    aria-label="expenses"
-                    onClick={() => handlePageChange(next)}
-                  >
-                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                      <ChevronRightIcon />
-                    </Avatar>
-                  </IconButton>
-                )}
+                <IconButton
+                  disabled={next ? false : true}
+                  edge="end"
+                  aria-label="expenses"
+                  onClick={() => handlePageChange(next)}
+                >
+                  <Avatar sx={{ m: 1, bgcolor: next ? green[500] : grey[500] }}>
+                    <ChevronRightIcon />
+                  </Avatar>
+                </IconButton>
               </Grid>
             </Grid>
           </Box>

@@ -32,15 +32,14 @@ const ResponsiveAppBar = () => {
     { name: "Chat", url: "chat/" },
   ];
 
-  const settings_not_authenticated = [
-    { name: "Profile", url: "profile/" },
-    { name: "Account", url: "account/" },
-    { name: "Dashboard", url: "dashboard/" },
+  const no_user_pages = [
+    { name: "Sign In", url: "login/" },
+    { name: "Sign Up", url: "register/" },
   ];
+
   const settings_authenticated = [
     { name: "Profile", url: "profile/" },
     { name: "Account", url: "account/" },
-    { name: "Dashboard", url: "dashboard/" },
   ];
 
   const getAvatar = async () => {
@@ -71,6 +70,7 @@ const ResponsiveAppBar = () => {
 
   React.useEffect(() => {
     getAvatar();
+    console.log(user);
   });
 
   return (
@@ -125,16 +125,27 @@ const ResponsiveAppBar = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem
-                  component={Link}
-                  to={page.url}
-                  key={page.name}
-                  onClick={handleCloseNavMenu}
-                >
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
-              ))}
+              {user !== null
+                ? pages.map((page) => (
+                    <MenuItem
+                      component={Link}
+                      to={page.url}
+                      key={page.name}
+                      onClick={handleCloseNavMenu}
+                    >
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </MenuItem>
+                  ))
+                : no_user_pages.map((page) => (
+                    <MenuItem
+                      component={Link}
+                      to={page.url}
+                      key={page.name}
+                      onClick={handleCloseNavMenu}
+                    >
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </MenuItem>
+                  ))}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -157,17 +168,29 @@ const ResponsiveAppBar = () => {
             GymApp
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                component={Link}
-                to={page.url}
-                key={page.name}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page.name}
-              </Button>
-            ))}
+            {user !== null
+              ? pages.map((page) => (
+                  <Button
+                    component={Link}
+                    to={page.url}
+                    key={page.name}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                  >
+                    {page.name}
+                  </Button>
+                ))
+              : no_user_pages.map((page) => (
+                  <Button
+                    component={Link}
+                    to={page.url}
+                    key={page.name}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                  >
+                    {page.name}
+                  </Button>
+                ))}
           </Box>
           {user && (
             <Box sx={{ flexGrow: 0 }}>

@@ -78,12 +78,9 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-        print("jestem w post")
         serializer = self.serializer_class(data=self.request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        print("user", user)
-        print("serializer.data", serializer.data)
         user_serializer = UserSerializer(user)
         data = serializer.data
         data["user"] = user_serializer.data
@@ -202,7 +199,6 @@ class PasswordTokenCheckView(generics.GenericAPIView):
 class SetNewPasswordView(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
     permission_classes = (AllowAny,)
-    print("wchodze")
 
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)

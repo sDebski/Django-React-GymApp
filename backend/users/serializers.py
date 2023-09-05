@@ -90,7 +90,6 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = authenticate(**data)
         filtered_user_by_email = User.objects.filter(email=data["email"]).first()
-        print(filtered_user_by_email)
         if not user:
             raise AuthenticationFailed("Invalid credentials, try again")
         if not user.is_active:

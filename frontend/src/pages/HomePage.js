@@ -65,7 +65,12 @@ const HomePage = () => {
             alignItems: "center",
           }}
         >
-          <Typography variant="h6">Welcome to GYM APP!</Typography>
+          <Typography variant="h1">
+            Welcome to <p>GYM APP</p>
+          </Typography>
+          <Typography variant="h6">
+            Select the section from navigation bar
+          </Typography>
         </Box>
 
         <Divider />

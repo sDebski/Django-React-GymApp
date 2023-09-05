@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.mail import EmailMessage
+
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -10,6 +11,16 @@ from django.utils.encoding import (
     DjangoUnicodeDecodeError,
 )
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+import threading
+
+
+class EmailThread(threading.Thread):
+    def __init__(self, email):
+        self.email = email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send()
 
 
 def get_tokens_for_user(user):
@@ -46,12 +57,14 @@ def send_activation_email(request, user):
     email = EmailMessage(
         subject=data["email_subject"],
         body=data["email_body"],
-        to=[
-            data["to_email"],
-        ],
+        to=[data["to_email"]],
     )
 
-    email.send(fail_silently=False)
+    email = EmailMessage(
+        subject=data["email_subject"], body=data["email_body"], to=[data["to_email"]]
+    )
+
+    EmailThread(email).start()
 
 
 def send_email_reset(request, user):
@@ -79,14 +92,11 @@ def send_email_reset(request, user):
         "email_subject": "Password reset",
         "to_email": user.email,
     }
-    # print("currentsite", current_site)
-    # print("uidb64", uidb64)
-    # print("abs_url", absurl)
-    # print("data", data)
-    # print("relativeLink", relativeLink)
-    # print("token", token)
+
     email = EmailMessage(
-        subject=data["email_subject"], body=data["email_body"], to=[data["to_email"]]
+        subject=data["email_subject"],
+        body=data["email_body"],
+        to=[data["to_email"]],
     )
 
-    email.send(fail_silently=False)
+    EmailThread(email).start()

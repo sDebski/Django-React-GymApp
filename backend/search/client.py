@@ -13,7 +13,6 @@ def get_index(index_name):
 
 def perform_search(query, **kwargs):
     index_name = kwargs.pop("index_name")
-    print("index_name", index_name)
     index = get_index(index_name=index_name)
     params = {}
     if "tags" in kwargs:

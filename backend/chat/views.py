@@ -14,7 +14,6 @@ class MessageAPIView(generics.ListCreateAPIView):
     queryset = Message.objects.all()
 
     def perform_create(self, serializer):
-        print("tworze i wysylam wiadomosc o tresci: ", self.request.data["body"])
         now = datetime.datetime.now()
         dt_str = now.strftime("%m/%d/%Y, %H:%M:%S")
         last_name = (
