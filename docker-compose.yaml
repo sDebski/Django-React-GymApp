@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   backend:
+    image: skwdebski/gym-app:backend
     volumes:
       - static:/static
     env_file:
@@ -10,14 +11,16 @@ services:
       context: ./backend
     ports:
       - "127.0.0.1:8000:8000"
-    image: skwdebski/gym-app:backend
+
   frontend:
+    image: skwdebski/gym-app:frontend
     build:
       context: ./frontend
     volumes:
       - frontend:/app/build
-    image: skwdebski/gym-app:frontend
+
   nginx:
+    image: skwdebski/gym-app:nginx
     build:
       context: ./nginx
     volumes:
@@ -28,7 +31,6 @@ services:
     depends_on:
       - backend
       - frontend
-    image: skwdebski/gym-app:nginx
 
 volumes:
   static:

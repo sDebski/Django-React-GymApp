@@ -6,38 +6,23 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
-import InboxIcon from "@mui/icons-material/Inbox";
-import DraftsIcon from "@mui/icons-material/Drafts";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SearchComponent from "../components/SearchComponent";
-import ExerciseHitComponent from "../components/ExerciseHitComponent";
 import { useNavigate } from "react-router-dom";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
-import ChatIcon from "@mui/icons-material/Chat";
 
 const defaultTheme = createTheme();
 
@@ -74,7 +59,6 @@ const ExerciseDetailsPage = () => {
     if (response.status === 200) {
       setExercise(data);
       setLoaded(true);
-      // console.log(data);
     }
   };
 
@@ -118,7 +102,7 @@ const ExerciseDetailsPage = () => {
         body: currentComment,
       }
     );
-    if (response.status == 200) {
+    if (response.status === 200) {
       getExerciseDetail();
       getAllComments();
     }
@@ -129,7 +113,7 @@ const ExerciseDetailsPage = () => {
       exercise: id,
       body: body,
     });
-    if (response.status == 201) {
+    if (response.status === 201) {
       getExerciseDetail();
       getAllComments();
       document.getElementById("comment_add_form").reset();
@@ -147,8 +131,8 @@ const ExerciseDetailsPage = () => {
     let result = false;
     for (let i = 0; i < exercise.likes?.length; i++) {
       if (
-        exercise.likes[i][0] == user.first_name &&
-        exercise.likes[i][1] == user.last_name
+        exercise.likes[i][0] === user.first_name &&
+        exercise.likes[i][1] === user.last_name
       ) {
         result = true;
         break;
@@ -188,7 +172,7 @@ const ExerciseDetailsPage = () => {
       checkIfExerciseLikedByUser();
     }
     getAllComments();
-  }, [loaded]);
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>

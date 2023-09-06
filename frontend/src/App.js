@@ -1,9 +1,7 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import Header from "./components/Header";
 import PrivateRoute from "./utils/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
 import RegisterPage from "./pages/RegistrationPage";
@@ -15,7 +13,6 @@ import Navbar from "./components/Navbar";
 import ExpensesPage from "./pages/ExpensesPage";
 import ProfilePage from "./pages/ProfilePage";
 import AccountPage from "./pages/AccountPage";
-import DashboardPage from "./pages/DashboardPage";
 import ExercisesPage from "./pages/ExercisesPage";
 import ChatPage from "./pages/ChatPage";
 import ExerciseDetailsPage from "./pages/ExerciseDetailsPage";
@@ -51,7 +48,6 @@ function App() {
               <Route Component={ExpensesPage} path="expenses/" />
               <Route Component={ProfilePage} path="profile/" />
               <Route Component={AccountPage} path="account/" />
-              <Route Component={DashboardPage} path="dashboard/" />
               <Route Component={ExercisesPage} path="exercises/" />
               <Route Component={ChatPage} path="chat/" />
               <Route

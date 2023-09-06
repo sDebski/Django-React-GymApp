@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -47,8 +46,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = async (credentialResponse) => {
-    console.log(credentialResponse);
-    console.log(credentialResponse.credential);
     let response = await fetch(
       "http://127.0.0.1:8000/api/social_auth/google/",
       {
@@ -86,8 +83,7 @@ export const AuthProvider = ({ children }) => {
         password2: data["password2"],
         date_of_birth: data["date_of_birth"],
         email: data["email"],
-        // TO DO CHANGE
-        redirect_url: "http://localhost:3000/email-verification",
+        redirect_url: "http://localhost:80/email-verification",
       }),
     });
 
@@ -119,18 +115,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log(loading);
-    console.log("UseEffect auth COntext");
     setUser(() =>
       localStorage.getItem("user") ? localStorage.getItem("user") : null
     );
-    console.log(user);
     setTokens(() =>
       localStorage.getItem("tokens")
         ? JSON.parse(localStorage.getItem("tokens"))
         : null
     );
-    console.log(tokens);
     setLoading(() => false);
   }, [loading]);
 

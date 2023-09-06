@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import useAxios from "../utils/useAxios";
 
 const ResponsiveAppBar = () => {
-  let { user, logoutUser, registerUser } = React.useContext(AuthContext);
+  let { user, logoutUser } = React.useContext(AuthContext);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   let api = useAxios();
@@ -70,7 +70,6 @@ const ResponsiveAppBar = () => {
 
   React.useEffect(() => {
     getAvatar();
-    console.log(user);
   });
 
   return (

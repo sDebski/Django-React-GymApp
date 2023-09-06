@@ -1,19 +1,12 @@
 import algoliasearch from "algoliasearch/lite";
 import { InstantSearch, SearchBox, Hits } from "react-instantsearch";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 
 const SearchComponent = ({ searchingObject }) => {
   let baseURL = "http://127.0.0.1:8000/api/";
-  const [algoliaAPIKeys, setAlgoliaAPIKeys] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [searchClient, setSearchClient] = useState({});
-
-  //ustawic dynamiczny indeks bazujacy na propsach
 
   const getAlgoliaAPIKeys = async () => {
     let response = await fetch(baseURL + "search/public/", {
@@ -24,7 +17,6 @@ const SearchComponent = ({ searchingObject }) => {
     });
     let data = await response.json();
     if (response.status === 200) {
-      setAlgoliaAPIKeys({ ...data.data });
       setSearchClient(
         algoliasearch(data.data.APPLICATION_ID, data.data.PUBLIC_API_KEY)
       );

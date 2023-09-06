@@ -3,9 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -15,7 +12,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-// import FacebookLogin from "react-facebook-login";
 
 const defaultTheme = createTheme();
 
@@ -38,14 +34,6 @@ export default function LoginPage() {
       return;
     }
     loginUser(event);
-  };
-
-  const responseFacebook = (response) => {
-    console.log(response);
-  };
-
-  const componentClicked = () => {
-    console.log("Clicked!");
   };
 
   return (
@@ -120,19 +108,9 @@ export default function LoginPage() {
                     }}
                     onError={() => {
                       alert("Something went wrong!");
-                      console.log("Login Failed");
                     }}
                   />
                 </Grid>
-                {/* <Grid item xs={12} sm={12}>
-                  <FacebookLogin
-                    appId="314046614496841"
-                    autoLoad={true}
-                    fields="name,email,picture"
-                    onClick={componentClicked}
-                    callback={responseFacebook}
-                  />
-                </Grid> */}
               </Grid>
             </Box>
           </Box>

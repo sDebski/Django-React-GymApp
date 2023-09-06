@@ -1,25 +1,17 @@
-import React, { useContext } from "react";
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AuthContext from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-
 const defaultTheme = createTheme();
 
 export default function ResetPasswordPage() {
   let baseURL = "http://127.0.0.1:8000/api/users/";
-  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -36,7 +28,7 @@ export default function ResetPasswordPage() {
       body: JSON.stringify({
         email: email,
         // TO DO CHANGE
-        redirect_url: "http://localhost:3000/reset-password-new-password",
+        redirect_url: "http://localhost:80/reset-password-new-password",
       }),
     });
 

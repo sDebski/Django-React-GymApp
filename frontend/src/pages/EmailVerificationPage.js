@@ -1,30 +1,15 @@
-import AuthContext from "../context/AuthContext";
-import useAxios from "../utils/useAxios";
-import { useParams } from "react-router-dom";
 import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  Routes,
-  Route,
-  useSearchParams,
-  BrowserRouter,
-} from "react-router-dom";
-import { createContext, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
@@ -36,24 +21,14 @@ const EmailVerificationPage = () => {
 
   useEffect(() => {
     let email = queryParameters.get("emailVerified");
-    if (email == "true") setEmailVerified(true);
+    if (email === "true") setEmailVerified(true);
     else setEmailVerified(false);
-  });
+  }, [emailVerified, queryParameters]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     navigate("/login");
   };
-
-  // return (
-  //   <div>
-  //     {emailVerified ? (
-  //       <p>Email has been succesfully verified! You can now log in!</p>
-  //     ) : (
-  //       <p>Something went wrong...</p>
-  //     )}
-  //   </div>
-  // );
 
   return (
     <ThemeProvider theme={defaultTheme}>

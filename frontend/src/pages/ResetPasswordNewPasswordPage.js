@@ -1,33 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AuthContext from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { createContext, useState, useEffect } from "react";
-import {
-  Routes,
-  Route,
-  useSearchParams,
-  BrowserRouter,
-} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function ResetPasswordNewPasswordPage() {
   let baseURL = "http://127.0.0.1:8000/api/users/";
-  const navigate = useNavigate();
-  const [queryParameters] = useSearchParams();
+  const queryParameters = useSearchParams();
   const [tokenValid, setTokenValid] = useState(false);
   const [uidb64, setUidb64] = useState(null);
   const [token, setToken] = useState(null);
@@ -37,11 +26,11 @@ export default function ResetPasswordNewPasswordPage() {
     let tokenValid = queryParameters.get("token_valid");
     let uidb64 = queryParameters.get("uidb64");
     let token = queryParameters.get("token");
-    if (tokenValid == "true") setTokenValid(true);
+    if (tokenValid === "true") setTokenValid(true);
     else setTokenValid(false);
     setUidb64(uidb64);
     setToken(token);
-  });
+  }, [tokenValid, queryParameters]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
