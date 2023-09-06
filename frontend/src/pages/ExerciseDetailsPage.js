@@ -49,7 +49,7 @@ const ExerciseDetailsPage = () => {
   const [exercise, setExercise] = useState({});
   const [currentComment, setCurrentComment] = useState("");
   const [currentCommentID, setCurrentCommentID] = useState(null);
-  const baseURL = "http://127.0.0.1:8000/exercises/";
+  const baseURL = "http://127.0.0.1:8000/api/exercises/";
   const navigate = useNavigate();
   const [likeDislike, setLikeDislike] = useState(false);
   const [loaded, setLoaded] = useState(false);

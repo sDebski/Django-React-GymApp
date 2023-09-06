@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function ResetPasswordPage() {
-  let baseURL = "http://127.0.0.1:8000/users/";
+  let baseURL = "http://127.0.0.1:8000/api/users/";
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -35,6 +35,7 @@ export default function ResetPasswordPage() {
       },
       body: JSON.stringify({
         email: email,
+        // TO DO CHANGE
         redirect_url: "http://localhost:3000/reset-password-new-password",
       }),
     });

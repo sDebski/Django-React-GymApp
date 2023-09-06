@@ -42,7 +42,7 @@ const ExercisesPage = () => {
     index: "skwde_Exercise",
     hitComponent: ExerciseHitComponent,
   };
-  let baseURL = "http://127.0.0.1:8000/";
+  let baseURL = "http://127.0.0.1:8000/api/";
   const [currentCategory, setCurrentCategory] = useState("");
   const changeCategory = (newCategory) => {
     setCurrentCategory(newCategory);

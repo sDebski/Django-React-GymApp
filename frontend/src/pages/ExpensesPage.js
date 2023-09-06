@@ -36,7 +36,7 @@ import { blue, green, grey, pink, yellow } from "@mui/material/colors";
 const defaultTheme = createTheme();
 
 const ExpensesPage = () => {
-  let baseURL = "http://127.0.0.1:8000/";
+  let baseURL = "http://127.0.0.1:8000/api/";
   let [categoryExpenses, setCategoryExpenses] = useState([]);
   let [allExpenses, setAllExpenses] = useState([]);
   let [next, setNext] = useState(null);

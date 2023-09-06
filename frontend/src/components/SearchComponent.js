@@ -8,7 +8,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
 const SearchComponent = ({ searchingObject }) => {
-  let baseURL = "http://127.0.0.1:8000/";
+  let baseURL = "http://127.0.0.1:8000/api/";
   const [algoliaAPIKeys, setAlgoliaAPIKeys] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [searchClient, setSearchClient] = useState({});

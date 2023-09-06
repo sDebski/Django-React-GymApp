@@ -25,7 +25,7 @@ import {
 const defaultTheme = createTheme();
 
 export default function ResetPasswordNewPasswordPage() {
-  let baseURL = "http://127.0.0.1:8000/users/";
+  let baseURL = "http://127.0.0.1:8000/api/users/";
   const navigate = useNavigate();
   const [queryParameters] = useSearchParams();
   const [tokenValid, setTokenValid] = useState(false);

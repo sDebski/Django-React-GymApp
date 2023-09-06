@@ -147,9 +147,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "../frontend/build/static"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "../frontend/build/static"),
+# ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -166,8 +166,9 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 STATIC_URL = "static/"
+STATIC_ROOT = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
+MEDIA_URL = "api/media/"
 
 # LOGIN_URL = "login"

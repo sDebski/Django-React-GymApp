@@ -39,7 +39,7 @@ const ProfilePage = () => {
   let [profile, setProfile] = useState({ bio: "" });
   let [image, setImage] = useState(null);
   let [avatar, setAvatar] = useState(
-    "http://127.0.0.1:8000/media/profiles/skwdemailcom-pobrane.jpg"
+    "http://127.0.0.1:8000/api/media/profiles/skwdemailcom-pobrane.jpg"
   );
   useEffect(() => {
     getProfile();

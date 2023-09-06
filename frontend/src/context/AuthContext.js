@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
-  let baseURL = "http://127.0.0.1:8000/users/";
+  let baseURL = "http://127.0.0.1:8000/api/users/";
 
   let [tokens, setTokens] = useState(() =>
     localStorage.getItem("tokens")
@@ -49,15 +49,18 @@ export const AuthProvider = ({ children }) => {
   const loginWithGoogle = async (credentialResponse) => {
     console.log(credentialResponse);
     console.log(credentialResponse.credential);
-    let response = await fetch("http://127.0.0.1:8000/social_auth/google/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        auth_token: credentialResponse.credential,
-      }),
-    });
+    let response = await fetch(
+      "http://127.0.0.1:8000/api/social_auth/google/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          auth_token: credentialResponse.credential,
+        }),
+      }
+    );
     let data = await response.json();
     if (response.status === 200) {
       setTokens(data.tokens);
@@ -83,6 +86,7 @@ export const AuthProvider = ({ children }) => {
         password2: data["password2"],
         date_of_birth: data["date_of_birth"],
         email: data["email"],
+        // TO DO CHANGE
         redirect_url: "http://localhost:3000/email-verification",
       }),
     });

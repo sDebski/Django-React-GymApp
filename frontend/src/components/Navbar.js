@@ -23,7 +23,7 @@ const ResponsiveAppBar = () => {
   let api = useAxios();
 
   let [userAvatar, setUserAvatar] = React.useState(
-    "http://127.0.0.1:8000/media/profiles/skwdemailcom-pobrane.jpg"
+    "http://127.0.0.1:8000/api/media/profiles/skwdemailcom-pobrane.jpg"
   );
 
   const pages = [
