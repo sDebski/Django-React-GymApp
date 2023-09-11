@@ -25,7 +25,7 @@ function UserHitComponent({ hit }) {
       disablePadding
     >
       <ListItemText
-        primary={`${hit.first_name} | ${hit.last_name}$`}
+        primary={`${hit.first_name} | ${hit.last_name} `}
         secondary={hit.objectID}
       />
     </ListItem>

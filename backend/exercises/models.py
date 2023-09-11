@@ -7,7 +7,10 @@ USER = settings.AUTH_USER_MODEL
 
 
 def get_owner_name(owner):
-    return f"{owner.first_name.capitalize()}  {owner.last_name.capitalize()}"
+    if owner is not None:
+        return f"{owner.first_name.capitalize()}  {owner.last_name.capitalize()}"
+    else:
+        return ""
 
 
 class Category(models.Model):
