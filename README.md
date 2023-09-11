@@ -2,6 +2,17 @@
 
 ### Frameworki:
 Django + React
+
+Aby uruchomić aplikację należy: 
+1. Pobrać repozytorium.
+2. Uruchomić aplikację <a id="raw-url" href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>.
+3. Będąc poziomie pliku docker-copomse.yaml wywołać:
+ ```
+ docker-compose up --build
+ ```
+4. Po uruchomieniu kontenera wejść na stronę:  <a id="raw-url" href="http://localhost:80">localhost:80</a>.
+
+
 ---
 ### Technologie:
 - Django, Django Rest Framework
