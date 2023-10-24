@@ -4,7 +4,7 @@
 
 Django + React
 
-Aby uruchomić aplikację należy:
+Aby uruchomić aplikację należy (WINDOWS):
 
 1. Pobrać repozytorium.
 2. Uruchomić aplikację <a id="raw-url" href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>.
@@ -23,7 +23,7 @@ docker-compose up --build
 - Django, Django Rest Framework
 - React
 - Pusher
-- AlgoliaSearcg
+- AlgoliaSearch
 - Google OAuth
 - Swagger
 - SQLite
